@@ -1,3 +1,6 @@
++ [计算理论](chapter-theory/README.md)
+  + [P vs NP](chapter-theory/pnp.md)
++ [System](chapter-system/README.md)
 + [C++](chapter-cpp/README.md)
   + [C++对象模型](chapter-cpp/object-model.md)
   + [Cast](chapter-cpp/cast.md)
