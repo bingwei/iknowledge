@@ -3,5 +3,6 @@
     "author": "nettee",
     "structure": {
         "readme": "INTRODUCTION.md"
-    }
+    },
+    "plugins": ["mathjax"]
 }
