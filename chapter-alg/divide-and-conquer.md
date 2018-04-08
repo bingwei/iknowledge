@@ -1,6 +1,6 @@
 # 分治
 
-## 相关算法
+## 算法实例
 
 | 算法 | Wikipedia | Swiss | Sedgewick | CLRS | DPV | KT |
 | --- | --- | --- | --- | --- | --- | --- |
