@@ -1,5 +1,6 @@
 + [算法](chapter-alg/README.md)
   + [数学基础](chapter-alg/math.md)
+  + [分治](chapter-alg/divide-and-conquer.md)
 + [计算理论](chapter-theory/README.md)
   + [P vs NP](chapter-theory/pnp.md)
 + [System](chapter-system/README.md)
