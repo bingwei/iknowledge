@@ -9,4 +9,5 @@
   + [C++对象模型](chapter-cpp/object-model.md)
   + [Cast](chapter-cpp/cast.md)
 + [Java](chapter-java/README.md)
++ [软件工程](chapter-se/README.md)
 + [JPF](chapter-jpf/README.md)
