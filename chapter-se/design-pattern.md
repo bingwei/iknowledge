@@ -2,6 +2,8 @@
 
 如何学习设计模式：要能讲解出来，能举出例子。
 
+设计模式间的区分：[那些相似的设计模式的区别](https://blog.csdn.net/jinzhuojun/article/details/11555595)
+
 ## 设计模式的对应例子
 
 Java 标准库里的设计模式： [Examples Design Patterns in Java's core libraries](https://stackoverflow.com/questions/1673841/examples-of-gof-design-patterns-in-javas-core-libraries).
@@ -11,10 +13,20 @@ Java 标准库里的设计模式： [Examples Design Patterns in Java's core lib
 ### Strategy pattern
 
 + `java.io.FileFilter`与`java.io.FilenameFilter`，传入`java.io.File.listFiles()`
++ `java.util.Comparator`，传入`java.util.Arrays.sort()`（另有`java.util.List.sort()`与`java.util.Collections.sort()`，与`Arrays.sort()`实际相同）
++ `android.support.v7.widget.RecyclerView.LayoutManager`，有子类`LinearLayoutManager`, `GridLayoutManager`；用户可自定义子类，并通过`RecyclerView.setLayoutManager()`动态设置
+
+### Command pattern
+
++ `java.lang.Runnable`与`java.util.concurrent.Callable`，交给`ExecutorService`执行
++ 数据库记录日志，用来undo, redo
 
 ### Template method pattern
 
-+ Android activity lifecycle (`onCreate()`, `onResume()`, `onPause()`, etc.)
++ `java.io.InputStream`, `java.io.Reader` 中的 `read()` 等； `java.io.OutputStream`, `java.io.Writer` 中的 `write()` 等
++ `java.util.AbstractList` 中的 `add()`, `get()`, `remove()` 等；`java.util.AbstractMap` 中的 `put()`, `entrySet()`等
++ `android.app.Activity` 中的 `onCreate()`, `onResume()`, `onPause()` 等，提供默认行为，子类可扩充
++ `javax.servlet.http.HttpServlet` 中的 `doGet()`, `doPost()` 等，默认返回405错误，需要子类覆盖实现
 
 ## 设计模式学习笔记
 
