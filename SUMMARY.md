@@ -10,4 +10,5 @@
   + [Cast](chapter-cpp/cast.md)
 + [Java](chapter-java/README.md)
 + [软件工程](chapter-se/README.md)
+  + [设计模式](chapter-se/design-pattern.md)
 + [JPF](chapter-jpf/README.md)
