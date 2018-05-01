@@ -2,15 +2,14 @@
 
 如何学习设计模式：要能讲解出来，能举出例子。
 
-
-
 参考文档：
 + [Wikipedia: Software design pattern](https://en.wikipedia.org/wiki/Software_design_pattern)
 + [图说设计模式](https://design-patterns.readthedocs.io/zh_CN/latest/index.html)
 
 ## 设计模式的对应例子
 
-Java 标准库里的设计模式： [Examples Design Patterns in Java's core libraries](https://stackoverflow.com/questions/1673841/examples-of-gof-design-patterns-in-javas-core-libraries).
++ Java 标准库里的设计模式： [Examples Design Patterns in Java's core libraries](https://stackoverflow.com/questions/1673841/examples-of-gof-design-patterns-in-javas-core-libraries).
++ Android 库里的设计模式： [Android 源码设计模式分析](https://github.com/simple-android-framework/android_design_patterns_analysis)
 
 更多的例子：
 
@@ -34,7 +33,9 @@ Java 标准库里的设计模式： [Examples Design Patterns in Java's core lib
 
 ### Chain of responsibility pattern
 
-很多地方说 log 是的，有待验证。
++ 很多logger，如`java.util.logging.Logger`（有待验证）
++ `okhttp3.Interceptor`
++ Android中对TouchEvent的处理（思路接近）
 
 ## 设计模式间的区分
 
