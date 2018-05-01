@@ -2,7 +2,11 @@
 
 如何学习设计模式：要能讲解出来，能举出例子。
 
-设计模式间的区分：[那些相似的设计模式的区别](https://blog.csdn.net/jinzhuojun/article/details/11555595)
+
+
+参考文档：
++ [Wikipedia: Software design pattern](https://en.wikipedia.org/wiki/Software_design_pattern)
++ [图说设计模式](https://design-patterns.readthedocs.io/zh_CN/latest/index.html)
 
 ## 设计模式的对应例子
 
@@ -27,6 +31,15 @@ Java 标准库里的设计模式： [Examples Design Patterns in Java's core lib
 + `java.util.AbstractList` 中的 `add()`, `get()`, `remove()` 等；`java.util.AbstractMap` 中的 `put()`, `entrySet()`等
 + `android.app.Activity` 中的 `onCreate()`, `onResume()`, `onPause()` 等，提供默认行为，子类可扩充
 + `javax.servlet.http.HttpServlet` 中的 `doGet()`, `doPost()` 等，默认返回405错误，需要子类覆盖实现
+
+### Chain of responsibility pattern
+
+很多地方说 log 是的，有待验证。
+
+## 设计模式间的区分
+
++ [那些相似的设计模式的区别](https://blog.csdn.net/jinzhuojun/article/details/11555595)
++ Chain of Responsibility vs. Decorator: [Why would I ever use a Chain of Responsibility over a Decorator?](https://stackoverflow.com/questions/747913/why-would-i-ever-use-a-chain-of-responsibility-over-a-decorator)
 
 ## 设计模式学习笔记
 
