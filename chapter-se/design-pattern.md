@@ -8,7 +8,9 @@
 
 ## 设计模式的对应例子
 
-+ Java 标准库里的设计模式： [Examples Design Patterns in Java's core libraries](https://stackoverflow.com/questions/1673841/examples-of-gof-design-patterns-in-javas-core-libraries).
++ Java 标准库里的设计模式：
+  +  [Examples Design Patterns in Java's core libraries](https://stackoverflow.com/questions/1673841/examples-of-gof-design-patterns-in-javas-core-libraries).
+  + [Patterns in Java APIs](http://cecs.wright.edu/~tkprasad/courses/ceg860/paper/node26.html)
 + Android 库里的设计模式： [Android 源码设计模式分析](https://github.com/simple-android-framework/android_design_patterns_analysis)
 
 更多的例子：
@@ -58,3 +60,11 @@ _Head First Design Patterns_ 中鸭子游戏的例子：
 
 好处：
 这些行为可以相互替换，也可以加入新的行为。
+
+### 装饰器模式 Decorator pattern
+
+Java I/O 标准库使用装饰器模式的好处：[stackoverflow](https://stackoverflow.com/questions/6366385/use-cases-and-examples-of-gof-decorator-pattern-for-io)
+
+### 蝇量模式 Flyweight pattern
+
+Java 中的例子：[Design Patterns in the Real World: Flyweight](https://tamasgyorfi.net/2016/05/30/design-patterns-in-the-real-world-flyweight/)
