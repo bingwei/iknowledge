@@ -25,6 +25,7 @@ _Effective Java_ 第11章中有一些关于序列化的高级话题。
 2. Stream介绍
 4. Stream基本用法(map, filter, reduce), 与内置函数式接口
 4. Stream collector
+5. Stream 源码剖析
 
 ## Lambda表达式与函数式接口
 
@@ -36,6 +37,23 @@ Lambda类似匿名内部类的语法糖，但JVM层面，两者有显著不同�
 
 哪里可以用? --> 一切函数式接口
 
+## Stream 源码剖析
+
+[这篇文章](http://www.cnblogs.com/CarpenterLee/archive/2017/03/28/6637118.html)写得不错。
+
+流水线(Pipeline)，由若干个stage组成。其中`Head`表示source stage，`StatelessOp`/`StatefulOp`表示 intermediate stage。
+
+疑问：为何pipeline的子类是stage？
+
+`Sink`类是核心数据结构，其中包括四个核心方法：`begin()`, `accept()`, `end()`, `cancellationRequested()`。
+
++ 有状态操作(stateful op)需要begin/end 配合accept进行
++ 短路操作需要cancellationRequested配合accept进行
+
 # Native method
 
 [java native 方法及 JNI 实例](https://blog.csdn.net/xw13106209/article/details/6989415)
+
+# 其他
+
+[RxJava 从入门到放弃再到不离不弃](https://www.daidingkang.cc/2017/05/19/Rxjava/)
