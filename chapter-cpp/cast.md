@@ -17,4 +17,4 @@ C++ 中为了区分类型转换的不同语义，引入了四种新的类型转�
 参考资料：
 
 + 一个容易理解的回答：[How do you explain the differences among static_cast, reinterpret_cast, const_cast, and dynamic_cast to a new C++ programmer?](https://www.quora.com/How-do-you-explain-the-differences-among-static_cast-reinterpret_cast-const_cast-and-dynamic_cast-to-a-new-C++-programmer)
-+ 更多内容请参考 _Effective C++_
++ 更多内容请参考 _More Effective C++_ : "Item 2"
