@@ -54,10 +54,18 @@
 
 API 中没有找到好的例子，但实际系统中应该经常能用到。
 
+### Observer pattern
+
+Java 标准库中有 `java.util.Observable` 类和 `java.util.Observer` 类。但 `Observable` 类有明显的缺点，一般没有人用。可以使用 Guava 中的 `EventBus`。
+
 ### Command pattern
 
 + `java.lang.Runnable`与`java.util.concurrent.Callable`，交给`ExecutorService`执行
 + 数据库记录日志，用来undo, redo
+
+### Iterator pattern
+
++ `java.util.Iterator` 与 `java.util.ListIterator`
 
 ### Template method pattern
 
