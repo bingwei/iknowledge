@@ -12,4 +12,5 @@
   + [函数式编程](chapter-java/functional.md)
 + [软件工程](chapter-se/README.md)
   + [设计模式](chapter-se/design-pattern.md)
+  + [程序员修养](chapter-se/programmer-cultivation.md)
 + [JPF](chapter-jpf/README.md)
