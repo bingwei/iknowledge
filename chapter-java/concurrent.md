@@ -40,6 +40,9 @@ synchronized (list) {
 
 + `ConcurrentMap` (`ConcurrentHashMap`, `ConcurrentSkipListMap`)
 + `BlockingQueue`
+  + `LinkedBlockingQueue`
+  + `ArrayBlockingQueue`
+  + `SynchronousQueue`
 + `ConcurrentLinkedQueue`
 + `CopyOnWriteArrayList`
 + `CopyOnWriteArraySet`
@@ -48,3 +51,14 @@ synchronized (list) {
 
 + `CopyOnWriteArrayList`
 + `CopyOnWriteArraySet`
+
+## `InterruptedException`
+
+https://www.ibm.com/developerworks/cn/java/j-jtp05236.html
+
+## Synchronizers
+
++ Blocking queue
++ Semaphore
++ Barrier
++ Latch
