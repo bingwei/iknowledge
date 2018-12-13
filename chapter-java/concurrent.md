@@ -33,7 +33,7 @@ Java 中的每个 `Thread` 都对应与操作系统的一个线程。线程创�
 提交任务：
 
 + `execute` (来自 `Executor`)，用来执行 `Runnable`
-+ `submit` (来自 `ExecutorService`)，用来执行 `Runnable` / `Callable`，返回 `Future`，可以 shutdown
++ `submit` (来自 `ExecutorService`)，用来执行 `Runnable` / `Callable`，返回 `Future`
 
 任务执行结果：`Future`
 
@@ -193,7 +193,10 @@ synchronized (list) {
 + 明确了内存模型
 + 基于 CAS 的 `java.util.concurrent` 包
 
-此版本引入 `ScheduledThreadPoolExecutor` 之后，基本可以取代 `Timer` / `TimerTask`
+带来的变化：
+
++ 此版本引入 `ScheduledThreadPoolExecutor` 之后，基本可以取代 `Timer` / `TimerTask`
++ 有了 `java.util.concurrent` 中的设施，基本上 wait / notify 已经完全用不到了
 
 ### JDK 6
 
