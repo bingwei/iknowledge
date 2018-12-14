@@ -1,0 +1,30 @@
+@startuml executor-service
+
+together {
+    interface Executor
+    interface ExecutorService
+    interface ScheduledExecutorService
+}
+abstract class AbstractExecutorService
+class ThreadPoolExecutor
+class ScheduledThreadPoolExecutor
+
+Executor <|-right- ExecutorService 
+ExecutorService <|-right- ScheduledExecutorService
+
+ExecutorService <|.. AbstractExecutorService
+ScheduledExecutorService <|.. ScheduledThreadPoolExecutor
+
+AbstractExecutorService <|-- ThreadPoolExecutor
+ThreadPoolExecutor <|-right- ScheduledThreadPoolExecutor
+
+Executor : execute(Runnable)
+ExecutorService : submit(Runnable)
+ExecutorService : submit(Callable<T>)
+
+ScheduledExecutorService : schedule(Callable<V>, delay, TimeUnit)
+ScheduledExecutorService : schedule(Runnable, delay, TimeUnit)
+ScheduledExecutorService : scheduleAtFixedRate(Runnable, initialDelay, period, TimeUnit)
+ScheduledExecutorService : scheduleWithFixedDelay(Runnable, initialDelay, delay, TimeUnit)
+
+@enduml
