@@ -79,9 +79,22 @@ Fixed thread pool 和 single thread executor 的线程数量是固定的，因�
 + `DiscardOldestPolicy` 新任务挤掉一个最老的任务
 + `CallerRunsPolicy` 在 caller 的线程中执行任务
 
-## 带调度的线程池
+用户可以继承 `ThreadPoolExecutor`，重写 `beforeExecute()`, `afterExecute()` 和 `terminated()`，来定义任务执行前后进行哪些处理。
 
-`ScheduledExecutorService` 是 `ExecutorService` 的子类。
+## 有延迟/周期的线程池
+
+`ScheduledExecutorService` 是 `ExecutorService` 的子类，除了有一般线程池的功能，还可以**周期性**执行任务。它可以取代 `Timer` / `TimerTask` 的功能。
+
++ `schedule(Runnable/Callable<V> command, long delay, TimeUnit unit)`
+  + 在指定的 delay 之后，运行任务
++ `scheduleAtFixedRate(Runnable command, long initialDelay, long period, TimeUnit unit)`
+  + 在指定的 initial delay 之后，每隔固定的 period 运行一次任务
++ `scheduleWithFixedDelay(Runnable command, long initialDelay, long delay, TimeUnit unit)`
+  + 在指定的 initial delay 之后，每次运行任务后，等待一个 delay 之后运行下一次任务
+
+## 线程池的实现原理
+
+在线程池中，每个线程对应一个 `Worker` 对象，通过 `Worker` 对象管理线程的执行。
 
 ## 生命周期
 
