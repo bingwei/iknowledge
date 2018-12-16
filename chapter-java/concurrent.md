@@ -78,6 +78,8 @@ synchronized (list) {
 + `CopyOnWriteArrayList`
 + `CopyOnWriteArraySet`
 
+注意 `Vector` 和 `Stack` 类早已过时了，现在应该用 `ArrayList` 和 `Deque` 配合 `Collections.synchronizedXxx`。
+
 ## 同步模式
 
 + Blocking queue
