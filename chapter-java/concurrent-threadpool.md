@@ -108,5 +108,37 @@ Fixed thread pool 和 single thread executor 的线程数量是固定的，因�
 
 ## 取消任务
 
-+ 不要使用 `Thread::stop`
-+ [处理 `InterruptedException`](https://www.ibm.com/developerworks/cn/java/j-jtp05236.html)
+`Thread::stop` 方法早已废弃，因为非常不安全。
+
+```Java
+try {
+    SECONDS.sleep(1);
+} finally {
+    generator.cancel();
+}
+```
+
+线程的 interruption 是一个信号，一个线程发送给另外一个线程的通知。没有任何规范定义 interruption 对应于“停止工作” (cancel) 的语义，但这已经约定俗成了。中断通知也没法保证停止目标线程的工作，它只是一个请求。
+
+标准库里的**阻塞操作**都会抛出 `InterruptedException`。这个异常表示因为中断，执行提前终止。
+
+调用 `Thread::interrupt` 中断一个线程，调用 `Thread::isInterrupted` 检查线程是否被中断。中断一个线程时，将会设置线程的 _中断状态 (interrupted status)_；如果线程正在执行阻塞操作，线程会抛出`InterruptedException`。
+
+处理 `InterruptedException` 通常有两种方式：
+
++ 传播 exception
+  + 直接在 method signature 上添加 `throws InterruptedException`，或者 catch 并 rethrow 这个异常
++ 存储异常状态，让上层代码可以处理
+  + `Thread.currentThread().interrupt()`
+
+例如，当 `ThreadPoolExecutor` 里的一个 worker 线程检测到中断消息——
+
++ 若线程池正在 shutdown，则进行一些线程池清理工作
++ 若线程池未 shutdown，则创建一个新线程，保证线程池的线程数正常
+
+一般情况下，swallow 这个异常（catch 并什么都不做）是不合适的。
+
+参考：
+
++ [处理 InterruptedException - developerworks](https://www.ibm.com/developerworks/cn/java/j-jtp05236.html)
++ [如何处理 InterruptedException - StackOverflow](https://stackoverflow.com/questions/3976344/handling-interruptedexception-in-java)
