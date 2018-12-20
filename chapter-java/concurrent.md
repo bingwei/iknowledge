@@ -4,6 +4,8 @@
 
 + _Java Concurrency in Practice_ （[豆瓣](https://book.douban.com/subject/1888733/)）建议看英文版
 + [《深入浅出 Java Concurrency》系列文章](http://www.blogjava.net/xylz/archive/2010/07/08/325587.html)
++ [Java Tutorials: Concurrency](https://docs.oracle.com/javase/tutorial/essential/concurrency/index.html)
+
 
 可以分为五个部分的内容：
 
@@ -86,6 +88,18 @@ synchronized (list) {
 + Semaphore
 + Barrier
 + Latch
+
+## Misc
+
+### CAS (compare and swap) 原子操作
+
+基于 CPU 提供的原子操作指令实现，如 x86 的 `CMPXCHG` 指令。
+CAS 是一种无锁的原子操作，用来实现 lock-free 的数据结构。
+
+参考：
+
++ [Compare-and-swap - Wikipedia](https://en.wikipedia.org/wiki/Compare-and-swap)
++ [无锁队列的实现 - 酷壳](https://coolshell.cn/articles/8239.html)
 
 ## Java 不同版本的并发编程设施变化
 
