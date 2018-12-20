@@ -32,6 +32,21 @@ Java 中的每个 `Thread` 都对应与操作系统的一个线程。线程创�
 + 防止编译器进行不正确的优化（例如优化成常量）
 + 每一次变量值的修改都直接写到主存中（而不是寄存器或 cache）
 
+```Java
+public class ExampleTask implements Runnable {
+
+    private volatile boolean cancelled;
+
+    public void run() {
+        while (!cancelled) {
+            compute();
+        }
+    }
+
+    public void cancel() { cancelled = true; }
+}
+```
+
 ## 并发集合
 
 ### Unmodifiable view
