@@ -17,7 +17,7 @@
 
 TODO list：
 
-+ ...
++ `StringBuilder` 和 `StringBuffer` 什么区别？ `StringBuffer` 是否是类似 `Vector` 的 synchronized collection?
 
 ## 线程
 

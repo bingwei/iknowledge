@@ -12,5 +12,7 @@
 ## 术语
 
 + **Advice**
-+ **Pointcut** 
++ **Pointcut**
 + **Join point**
+
+Spring 只支持 method 级别的 AOP，AspectJ 支持更细粒度的。
