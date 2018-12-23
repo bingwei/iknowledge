@@ -15,4 +15,6 @@
 + **Pointcut**
 + **Join point**
 
-Spring 只支持 method 级别的 AOP，AspectJ 支持更细粒度的。
+## 框架
+
+Spring 的 AOP 框架借鉴了 AspectJ 的 annotation-based 语法。不过 Spring 只支持 method 级别的 AOP（AspectJ 支持 field 级别的 AOP）。
