@@ -9,7 +9,13 @@
   + [类型转换](chapter-cpp/cast.md)
   + [C++对象模型](chapter-cpp/object-model.md)
 + [Java](chapter-java/README.md)
-  + [函数式编程](chapter-java/functional.md)
+  + 语言机制
+    + [函数式编程](chapter-java/functional.md)
+  + 标准库
+    + [并发](chapter-java/concurrent.md)
+  + 模式与框架
+    + [依赖注入 (DI) / 控制反转 (IoC)](chapter-java/di-ioc.md)
+    + [面向切面编程 (AOP)](chapter-java/aop.md)
 + [软件工程](chapter-se/README.md)
   + [设计模式](chapter-se/design-pattern.md)
   + [程序员修养](chapter-se/programmer-cultivation.md)

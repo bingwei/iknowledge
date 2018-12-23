@@ -111,3 +111,12 @@ Java I/O 标准库使用装饰器模式的好处：[stackoverflow](https://stack
 ### 蝇量模式 Flyweight pattern
 
 Java 中的例子：[Design Patterns in the Real World: Flyweight](https://tamasgyorfi.net/2016/05/30/design-patterns-in-the-real-world-flyweight/)
+
+### 代理模式 Proxy pattern
+
+_Head First Design Patterns_ 中给出了两个很好的例子：
+
++ **远程代理**: Java RMI
++ **虚拟代理**: 对于一个创建开销大的对象（如需要从网上下载专辑封面的对象），当对象在创建前或创建中时，虚拟代理处理请求；当对象创建完成后，虚拟代理会直接将请求委托给真实对象
+
+`java.lang.reflect` 包可以支持动态代理。AOP 可以使用动态代理来实现。CGLig

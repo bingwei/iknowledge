@@ -23,6 +23,14 @@ Spring 中的 bean 默认都是 singleton。
   + JavaConfig
   + XML configuration
 
+## Spring IoC 原理
+
+基于反射机制：
+
++ 加载 class
++ 创建对象实例
++ 设置对象 field 的值（原始类型或对象类型）
+
 ## 参考资料
 
 + _Spring in Action_
