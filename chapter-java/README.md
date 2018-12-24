@@ -19,11 +19,13 @@ Java序列化规则总结: [StackOverflow](https://stackoverflow.com/questions/1
 
 _Effective Java_ 第11章中有一些关于序列化的高级话题。
 
-### 反射 (Reflection)
+### 反射/自省 (Reflection)
 
-TODO
+Java 反射的基本内容：[深入解析 Java 反射 - 基础](https://www.sczyh30.com/posts/Java/java-reflection-1/)
 
-TODO: Java 动态代理 `java.lang.reflect.Proxy`
+TODO: 从 JVM 层面理解反射
+
+TODO: JDK 动态代理 `java.lang.reflect.Proxy`；从 JVM 层面理解 JDK 动态代理
 
 ### Native method
 
