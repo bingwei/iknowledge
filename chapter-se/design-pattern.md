@@ -70,8 +70,8 @@ _Head First Design Patterns_ 中鸭子游戏的例子：
 好处：
 这些行为可以相互替换，也可以加入新的行为。
 
++ [**GOOD**] `java.util.Comparator`，传入`java.util.Arrays.sort()`（另有`java.util.List.sort()`与`java.util.Collections.sort()`，与`Arrays.sort()`实际相同）
 + `java.io.FileFilter`与`java.io.FilenameFilter`，传入`java.io.File.listFiles()`
-+ `java.util.Comparator`，传入`java.util.Arrays.sort()`（另有`java.util.List.sort()`与`java.util.Collections.sort()`，与`Arrays.sort()`实际相同）
 + `android.support.v7.widget.RecyclerView.LayoutManager`，有子类`LinearLayoutManager`, `GridLayoutManager`；用户可自定义子类，并通过`RecyclerView.setLayoutManager()`动态设置
 
 ### State 状态
@@ -124,6 +124,10 @@ TODO
 
 ### Decorator 装饰者
 
+典型特征：创建对象时，传入**相同接口**的一个实例，并为其**增加行为**（装饰）
+
+Java I/O 标准库是最好的例子，`InputStream`, `OutputStream`, `Reader`, `Writer` 的子类
+
 Java I/O 标准库使用装饰器模式的好处：[stackoverflow](https://stackoverflow.com/questions/6366385/use-cases-and-examples-of-gof-decorator-pattern-for-io)
 
 ### Facade 外观
@@ -136,12 +140,22 @@ TODO
 
 ### Proxy 代理
 
+#### 典型特征
+
+对象A（代理对象）将功能委托给对象B（被代理对象），两个对象**接口相同**
+
+#### 例子
+
 _Head First Design Patterns_ 中给出了两个很好的例子：
 
 + **远程代理**: Java RMI
 + **虚拟代理**: 对于一个创建开销大的对象（如需要从网上下载专辑封面的对象），当对象在创建前或创建中时，虚拟代理处理请求；当对象创建完成后，虚拟代理会直接将请求委托给真实对象
 
-`java.lang.reflect` 包可以支持动态代理。AOP 可以使用动态代理来实现。
+`java.lang.reflect.Proxy` 可以创建动态代理，在运行时实现代理模式。
+
+#### 用途/好处
+
+Spring AOP 基于动态代理实现。
 
 ### Bridge 桥接
 
@@ -149,9 +163,22 @@ TODO
 
 ### Flyweight 享元（蝇量）
 
+#### 典型特征
 
-Java 中的例子：[Design Patterns in the Real World: Flyweight](https://tamasgyorfi.net/2016/05/30/design-patterns-in-the-real-world-flyweight/)
+创建对象时，返回一个缓存的实例
 
+#### 例子
+
++ JVM 的 integer cache
+  + -128 ~ 127 （上限可设置）的整数对象会预先缓存，不会生成重复的对象
++ `String.intern()`
+  + 返回 string pool 中的一份缓存
+
+参考：[Design Patterns in the Real World: Flyweight](https://tamasgyorfi.net/2016/05/30/design-patterns-in-the-real-world-flyweight/)
+
+#### 用途/好处
+
+节省内存
 
 ### Composite 组合
 
