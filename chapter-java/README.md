@@ -6,6 +6,9 @@
 
 + transient 关键字
 + volatile 关键字
++ strictfp 关键字
+
+字符串 intern
 
 ### 函数式编程
 
