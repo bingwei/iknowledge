@@ -15,7 +15,7 @@
 
 装饰者模式是为了在**不改变接口**的情况下，加入新的功能。
 
-## 例子
+### 例子
 
 Java I/O 标准库是最好的例子，`InputStream`, `OutputStream`, `Reader`, `Writer` 的子类
 
@@ -78,9 +78,27 @@ Spring AOP 基于动态代理实现。
 
 ## Bridge 桥接
 
-TODO
+### 目的
+
+将*抽象*（一个类）和*实现*（一个类做的事情）解耦，使得两者可以独立地变化，而不会相互影响。通俗地说，桥接模式**连接了两个维度**。否则，两个维度的变化将导致组合爆炸。
+
+桥接适合使用在需要使用抽象维度的系统上，如笔-颜色、电视机-遥控器、手机品牌-手机功能、汽车品牌-手动挡自动挡。
+
+## 例子
+
+https://stackoverflow.com/questions/319728/when-do-you-use-the-bridge-pattern-how-is-it-different-from-adapter-pattern
+
+JDBC 是吗？https://stackoverflow.com/questions/46228420/why-is-jdbc-is-a-typical-example-of-bridge-design-pattern
+
+### 参考
+
++ _Head First Design Patterns_ 附录
 
 ## Flyweight 享元（蝇量）
+
+### 目的
+
+节省内存
 
 ### 典型特征
 
@@ -94,10 +112,6 @@ TODO
   + 返回 string pool 中的一份缓存
 
 参考：[Design Patterns in the Real World: Flyweight](https://tamasgyorfi.net/2016/05/30/design-patterns-in-the-real-world-flyweight/)
-
-### 用途/好处
-
-节省内存
 
 ## Composite 组合
 
