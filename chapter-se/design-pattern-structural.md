@@ -25,6 +25,8 @@ Java I/O 标准库使用装饰器模式的好处：[stackoverflow](https://stack
 
 ## Adapter 适配器
 
+也叫做 wrapper
+
 ### 目的
 
 适配器将一个接口**转换**成（用户期望的）另一个接口。适配器让原本接口不兼容的类可以合作。就像真实世界的适配器：让美式插头能插在欧式插座上。
@@ -76,19 +78,31 @@ _Head First Design Patterns_ 中给出了两个很好的例子：
 
 Spring AOP 基于动态代理实现。
 
-## Bridge 桥接
+## Bridge Pattern 桥接模式
 
 ### 目的
 
-将*抽象*（一个类）和*实现*（一个类做的事情）解耦，使得两者可以独立地变化，而不会相互影响。通俗地说，桥接模式**连接了两个维度**。否则，两个维度的变化将导致组合爆炸。
+将*抽象 (Abstraction)*（一个类）和*实现 (Implementor)*（一个类做的事情）解耦，使得两者可以独立地变化，而不会相互影响。
 
-桥接适合使用在需要使用抽象维度的系统上，如笔-颜色、电视机-遥控器、手机品牌-手机功能、汽车品牌-手动挡自动挡。
+### 例子
 
-## 例子
+桥接模式没有比较简单典型的例子，最好的例子还是 Wikipedia 中的 [Shape-drawing 的例子](https://en.wikipedia.org/wiki/Bridge_pattern#Java)。另外，_Head First Design Patterns_ 中给出了一个电视机-遥控器的例子。
 
-https://stackoverflow.com/questions/319728/when-do-you-use-the-bridge-pattern-how-is-it-different-from-adapter-pattern
++ Implementor: 接口 `DrawingAPI`，有方法 `drawCircle`
++ Concrete implementor: `DrawingAPI1`, `DrawingAPI2`，分别定义不同机制的绘图实现
++ Abstraction: 抽象类 `Shape`，保有 `DrawingAPI` 的引用，有方法 `draw`
++ Refined abstraction: 实现 `draw`，调用 `drawCircle`
 
-JDBC 是吗？https://stackoverflow.com/questions/46228420/why-is-jdbc-is-a-typical-example-of-bridge-design-pattern
+有部分资料称 JDBC、SLF4J 使用了桥接模式，但有待商榷。讨论见 StackOverflow: ([1](https://stackoverflow.com/questions/46228420/why-is-jdbc-is-a-typical-example-of-bridge-design-pattern), [2](https://stackoverflow.com/questions/14888218/what-is-an-example-of-the-bridge-pattern-in-core-java))
+
+有些情况下 implementor 退化为只有一个。
+
+桥接模式可以看作是模板方法模式和策略模式的复合。
+
+### 误区
+
+桥接模式的应用范围比想象中的要窄。在很多资料中，桥接模式是**连接了两个维度**，避免两个维度的变化将导致组合爆炸。例子如如笔-颜色、手机品牌-手机功能、汽车品牌-手动挡自动挡。但这些说法没有佐证。
+
 
 ### 参考
 
