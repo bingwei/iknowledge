@@ -6,7 +6,7 @@
 
 + 创建型模式 (creational patterns)
   + Singleton 单例
-  + Builder 构建
+  + Builder 构建（生成器）
   + Prototype 原型
   + Factory method 工厂方法
   + Abstract factory 抽象工厂
@@ -33,11 +33,11 @@
 
 ## 创建型模式
 
-### Singleton 单例
+### Singleton Pattern 单例模式
 
 TODO
 
-### Builder 构建
+### Builder Pattern 构建（生成器）模式
 
 TODO
 
