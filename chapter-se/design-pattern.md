@@ -31,29 +31,6 @@
   + Flyweight 享元（蝇量）
   + Composite 组合
 
-## 创建型模式
-
-### Singleton Pattern 单例模式
-
-TODO
-
-### Builder Pattern 构建（生成器）模式
-
-TODO
-
-### Prototype 原型
-
-TODO
-
-### Factory method 工厂方法
-
-TODO
-
-### Abstract factory 抽象工厂
-
-TODO
-
-
 ## 设计模式间的区分
 
 + Stategy vs. State: 见 _Head First Design Patterns_ 第10章
