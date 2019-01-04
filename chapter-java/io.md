@@ -1,8 +1,6 @@
 # Java IO
 
-IO 分为阻塞型 IO (Blocking I/O, BIO) 和非阻塞型 IO (Non-blocking I/O, NIO)。Java 标准库一开始只支持 BIO，在 1.4 版本才引入 NIO，因此 NIO 又称为 "New IO"。Java 的 BIO 类库已经用 NIO 重新实现过了。
-
-TODO：五种 IO 模型，见 https://tech.meituan.com/nio.html
+IO 分为阻塞型 IO (Blocking I/O, BIO)，非阻塞型 IO (Non-blocking I/O, NIO)，和异步 IO (Asynchronous I/O, AIO)。Java 标准库一开始只支持 BIO，在 1.4 版本引入 NIO，因此 NIO 又称为 "New IO"。Java 7 引入 NIO.2，支持 AIO。
 
 ## BIO & 流 (Stream)
 
@@ -130,6 +128,8 @@ Buffer 的模型：position, limit, 和 capacity。
 
 TODO：内存映射文件
 
+## AIO
+
 ## BIO vs. NIO
 
 BIO 是 _面向流_ 的，一次一个字节地处理数据。模型简单，但是速度较慢。
@@ -140,6 +140,10 @@ BIO 模型由于是阻塞的，必须依赖线程进行加速。然而，当连�
 
 NIO 一个重要的特点是：socket 主要的读、写、注册和接收函数，在等待就绪阶段都是非阻塞的，真正的 I/O 操作是同步阻塞的（耗时较短）。NIO 由原来的阻塞读写（占用线程）变成了单线程轮询事件，找到可以进行读写的网络描述符进行读写。除了事件的轮询是阻塞的（没有可干的事情必须要阻塞），剩余的 I/O 操作都是纯 CPU 操作，没有必要开启多线程。
 
+## Java I/O 编程
+
+参考[官方 tutorial](https://docs.oracle.com/javase/tutorial/essential/io/file.html)，以 `java.nio.file.Path` 为核心，灵活使用 stream 与 channel。
+
 ## Java IO 类库发展历史
 
 + Java 1.0
@@ -148,6 +152,9 @@ NIO 一个重要的特点是：socket 主要的读、写、注册和接收函数
   + `Reader`, `Writer`
 + Java 1.4
   + NIO
++ Java 7
+  + NIO.2 (AIO)
+  + `Path`
 
 TODO: NIO.2
 
