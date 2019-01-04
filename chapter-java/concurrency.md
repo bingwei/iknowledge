@@ -9,10 +9,10 @@
 可以分为五个部分的内容：
 
 + 原子性/线程安全
-+ [任务与线程池](concurrent-threadpool.md)
-+ [并发集合](concurrent-collection.md)
-+ 同步模式
-+ 锁
++ [任务与线程池](concurrency-threadpool.md)
++ [并发集合](concurrency-collection.md)
++ [同步模式](concurrency-sync.md)
++ [锁](concurrency-lock.md)
 
 TODO list：
 
@@ -46,12 +46,7 @@ public class ExampleTask implements Runnable {
 }
 ```
 
-## 同步模式
 
-+ Blocking queue
-+ Semaphore
-+ Barrier
-+ Latch
 
 ## Misc
 

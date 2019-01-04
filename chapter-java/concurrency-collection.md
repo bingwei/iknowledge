@@ -129,4 +129,4 @@ TODO
 
 + [并发集合类 - ConcurrentHashMap 和 CopyOnWriteArrayList 提供线程安全性和已改进的可伸缩性](https://www.ibm.com/developerworks/cn/java/j-jtp07233/index.html)
 + [JDK 中的并发集合](http://novoland.github.io/%E5%B9%B6%E5%8F%91/2014/07/26/%E5%B9%B6%E5%8F%91%E9%9B%86%E5%90%88.html)
-+ [解读 Java 并发队列 BlockingQueue](http://www.importnew.com/28053.html)
++ [解读 Java 并发队列 BlockingQueue](https://javadoop.com/post/java-concurrent-queue#%E6%80%BB%E7%BB%93)
