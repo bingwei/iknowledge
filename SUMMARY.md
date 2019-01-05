@@ -4,6 +4,8 @@
   + [贪心](chapter-alg/greedy.md)
   + [P & NP](chapter-alg/pnp.md)
 + [计算机系统](chapter-system/README.md)
++ [操作系统](chapter-os/README.md)
+  + [Linux I/O](chapter-os/linux-io.md)
 + [计算机网络](chapter-network/README.md)
 + [C++](chapter-cpp/README.md)
   + [类型转换](chapter-cpp/cast.md)
@@ -12,11 +14,23 @@
   + 语言机制
     + [函数式编程](chapter-java/functional.md)
   + 标准库
-    + [并发](chapter-java/concurrent.md)
+    + [I/O](chapter-java/io.md)
+    + [Collection](chapter-java/collection.md)
+    + [并发](chapter-java/concurrency.md)
+      + [任务与线程池](chapter-java/concurrency-threadpool.md)
+      + [并发集合](chapter-java/concurrency-collection.md)
+      + [同步机制](chapter-java/concurrency-sync.md)
+      + [锁](chapter-java/concurrency-lock.md)
   + 模式与框架
     + [依赖注入 (DI) / 控制反转 (IoC)](chapter-java/di-ioc.md)
     + [面向切面编程 (AOP)](chapter-java/aop.md)
+  + 内部原理
+    + [JVM](chapter-java/jvm.md)
 + [软件工程](chapter-se/README.md)
+  + [面向对象编程](chapter-se/oo.md)
   + [设计模式](chapter-se/design-pattern.md)
+    + [创建型模式](chapter-se/design-pattern-creational.md)
+    + [行为型模式](chapter-se/design-pattern-behavioral.md)
+    + [结构型模式](chapter-se/design-pattern-structural.md)
   + [程序员修养](chapter-se/programmer-cultivation.md)
 + [JPF](chapter-jpf/README.md)

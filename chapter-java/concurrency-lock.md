@@ -1,4 +1,4 @@
-# Java Concurrency - 锁 
+# Java Concurrency - 锁
 
 ## 概念
 
@@ -51,3 +51,13 @@ _Synchronized statements_:
 `ReentrantLock`，可重入锁。
 
 ## CAS 与无锁数据结构
+
+### CAS (compare and swap) 原子操作
+
+基于 CPU 提供的原子操作指令实现，如 x86 的 `CMPXCHG` 指令。
+CAS 是一种无锁的原子操作，用来实现 lock-free 的数据结构。
+
+参考：
+
++ [Compare-and-swap - Wikipedia](https://en.wikipedia.org/wiki/Compare-and-swap)
++ [无锁队列的实现 - 酷壳](https://coolshell.cn/articles/8239.html)

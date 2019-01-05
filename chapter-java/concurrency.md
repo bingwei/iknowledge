@@ -11,7 +11,7 @@
 + 原子性/线程安全
 + [任务与线程池](concurrency-threadpool.md)
 + [并发集合](concurrency-collection.md)
-+ [同步模式](concurrency-sync.md)
++ [同步机制](concurrency-sync.md)
 + [锁](concurrency-lock.md)
 
 TODO list：
@@ -45,20 +45,6 @@ public class ExampleTask implements Runnable {
     public void cancel() { cancelled = true; }
 }
 ```
-
-
-
-## Misc
-
-### CAS (compare and swap) 原子操作
-
-基于 CPU 提供的原子操作指令实现，如 x86 的 `CMPXCHG` 指令。
-CAS 是一种无锁的原子操作，用来实现 lock-free 的数据结构。
-
-参考：
-
-+ [Compare-and-swap - Wikipedia](https://en.wikipedia.org/wiki/Compare-and-swap)
-+ [无锁队列的实现 - 酷壳](https://coolshell.cn/articles/8239.html)
 
 ## Java 不同版本的并发编程设施变化
 
