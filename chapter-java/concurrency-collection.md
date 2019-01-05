@@ -92,8 +92,6 @@ TODO：ConcurrentModificationException
 
 在 `Queue` 接口的基础上添加一些阻塞行为。如果从空队列中取出元素，或者从满队列中插入元素，会导致等待。`Queue` 接口支持**抛出异常**和**返回特殊值**，而 `BlockingQueue` 接口还额外支持**阻塞**和**超时**。重点在 `put` 和 `take` 两个阻塞方法上。
 
-Blocking queue 适合用作数据共享的通道，如典型的生产者-消费者模型。
-
 | 操作 | 抛出异常 | 返回特殊值 | 阻塞 | 超时 |
 | :-: | :-: | :-: | :-: | :-: |
 | 插入元素 | `add(e)` | `offer(e)` | `put(e)` | `offer(e, time, unit)` |

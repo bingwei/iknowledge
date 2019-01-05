@@ -5,14 +5,81 @@
     + `BlockingQueue` 及其实现类
   + Semaphore
     + `Semaphore`
-  + Barrier
-    + `CyclicBarrier`
   + Latch
     + `CountDownLatch`
+  + Barrier
+    + `CyclicBarrier`
 + `Condition`
 + wait / notify 原语
 
 ## Synchronizer
+
+### Blocking queue
+
+Blocking queue 适合用作数据共享的通道，如典型的生产者-消费者模型：
+
+```Java
+class ProducerConsumer {
+
+    public static void main(String[] args) {
+        BlockingQueue<String> queue = new LinkedBlockingQueue<>(10);
+        Producer producer = new Producer(queue);
+        Consumer consumer = new Consumer(queue);
+        new Thread(producer).start();
+        new Thread(consumer).start();
+    }
+
+}
+
+class Producer implements Runnable {
+
+    private final BlockingQueue<String> queue;
+
+    public Producer(BlockingQueue<String> queue) {
+        this.queue = queue;
+    }
+
+    @Override
+    public void run() {
+        try {
+            for (int i = 0; i < 100; i++) {
+                TimeUnit.MILLISECONDS.sleep(500);
+                String product = "Product-" + i;
+                System.out.println("Produce: " + product);
+                queue.put(product);
+            }
+            queue.put("exit");
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+}
+
+class Consumer implements Runnable {
+
+    private final BlockingQueue<String> queue;
+
+    public Consumer(BlockingQueue<String> queue) {
+        this.queue = queue;
+    }
+
+    @Override
+    public void run() {
+        try {
+            while (true) {
+                String product = queue.take();
+                if (product.equals("exit")) {
+                    return;
+                }
+                TimeUnit.SECONDS.sleep(1);
+                System.out.println("Consume: " + product);
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+}
+```
 
 ### Semaphore (信号量): `Semaphore`
 

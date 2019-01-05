@@ -74,3 +74,8 @@ public class ExampleTask implements Runnable {
 ### JDK 7
 
 + 添加 fork/join 框架
+
+## 参考资料
+
++ [The Java Tutorials - Concurrency](https://docs.oracle.com/javase/tutorial/essential/concurrency/index.html)
++ _Java Concurrency in Practice_
