@@ -37,11 +37,13 @@ Mutex 即 _mutural exclusion lock_。只有一个线程可以拥有这个锁。
 
 ## `synchronized` 关键字
 
-`synchronized` 关键字是一种 locking 机制，互斥锁，可重入锁。
+`synchronized` 关键字本质上是对某个对象上锁，互斥锁，可重入锁。
 
-_Synchronized methods_:
-
-_Synchronized statements (block)_:
++ _Synchronized block_
+  + 括号内的对象是 lock object
++ _Synchronized method_
+  + 非静态方法，`this` 是 lock object，相当于 `synchronized(this)`
+  + 静态方法，`Class` 对象是 lock object
 
 ## `java.util.concurrent.locks` 中的锁
 

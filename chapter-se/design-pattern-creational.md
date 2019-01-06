@@ -73,6 +73,7 @@ public enum Singleton {
 
 ### 参考
 
++ _Effective Java_, #71
 + [如何正确地写出单例模式](http://wuchong.me/blog/2014/08/28/how-to-correctly-write-singleton-pattern/)
 
 ## Builder Pattern 建造者模式
