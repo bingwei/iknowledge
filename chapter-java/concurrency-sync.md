@@ -236,11 +236,33 @@ _Effective Java_ #69 中强调，**既然正确地使用 wait / notify 比较困
   + 也即检查 condition predicate 时，lock object 必须已上锁
 + 调用条件变量的 `wait()`, `notify()`, `notifyAll()` 时，条件变量对象必须已上锁
   + 为了保证状态一致性
-+ 通常情况下，要使用 `notifyAll()`
-  + 当一个条件变量对应多个 condition predicate 时，必须使用 `notifyAll()` 保证目标线程被唤醒
-+ 必须在一个循环中调用 `wait()`，循环的表达式是 condition predicate
++ 必须在一个循环中单独调用 `wait()`，循环的表达式是 condition predicate
   + 也即在 `wait()` 调用的前后都检查 condition predicate
-  + `wait()` 返回仅仅代表有线程调用了 `notifyAll()`，此时 condition predicate 不一定满足
+  + 当有多个 condition predicate 时，`wait()` 返回可能是其他的 condition predicate 满足了，当前 condition predicate 不一定满足
+  + 即使没有 notify，`wait()` 也可能 "spuriously" 返回
++ 调用 `notify()` / `notifyAll()` 之后要尽快释放锁
+  + 否则，被唤醒的线程将无法继续运行
++ 通常情况下，要使用 `notifyAll()` 而不是 `notify()`
+  + `notify()` 会（随机）唤醒条件变量队列中的一个线程
+  + `notifyAll()` 会唤醒条件变量队列中的所有线程
+  + 当一个条件变量对应多个 condition predicate 时，必须使用 `notifyAll()` 保证目标线程被唤醒
+  + 当想一次唤醒多个线程时（例如 latch 的 starting gate 例子），当然必须使用 `notifyAll()`
+
+![Three-way relationship: Object](concurrency/three-way-relationship-object.jpg)
+
+使用模式：
+
+```Java
+Object lock = new Object();
+// Lock 需要 guard condition predicate 和 wait()
+synchronized (lock) {
+    // 需要在循环中调用 wait()
+    while (!conditionPredicate()) {
+        lock.wait(); // 需要在 lock 对象上调用 wait()
+    }
+    // object is now in desired state
+}
+```
 
 示例代码：生产者-消费者队列
 
@@ -309,13 +331,30 @@ class BoundedBuffer<E> {
   + 只能通过 `Lock.newCondition()` 的方式创建
   + `Object` 需要自己保证 lock object 和 condition variable object 对应
 + 一个 `Lock` 可以对应多个 `Condition`
-  + `Object` 中，一个 lock object 只能有一个对应的 condition variable object，然后设置多个 condition predicate
-  + 多个 `Condition` 时，可以一个 `Condition` 对应一个 condition predicate
-  + 更多情况下，使用 `signal()` 就可以，不必使用 `signalAll()`
+  + 这样使得 `Condition` 可以和 condition predicate 一一对应 (best practice)
+  + 这时，使用 `signal()` 就可以，不必使用 `signalAll()`
 + 可以设置 `Condition` 的公平性 (继承 `Lock` 的公平性)
-+ 可以控制 `Condition` 的可见性
 + `await()` 可以设置 interruptible 或 uninterruptible
-+ Deadline-based waiting
+
+![Three-way relationship: Condition](concurrency/three-way-relationship-condition.jpg)
+
+使用模式：
+
+```Java
+Lock lock = new ReentrantLock();
+Condition condition = lock.newCondition();
+// Lock 需要 guard condition predicate 和 await()
+lock.lock();
+try {
+    // 需要在循环中调用 wait()
+    while (!conditionPredicate()) {
+        lock.await(); // 需要在 lock 对象上调用 await()
+    }
+    // object is now in desired state
+} finally {
+    lock.unlock();
+}
+```
 
 示例代码：生产者-消费者队列
 
