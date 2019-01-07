@@ -15,7 +15,7 @@
     + [函数式编程](chapter-java/functional.md)
   + 标准库
     + [I/O](chapter-java/io.md)
-    + [Collection](chapter-java/collection.md)
+    + [集合框架](chapter-java/collection.md)
     + [并发](chapter-java/concurrency.md)
       + [任务与线程池](chapter-java/concurrency-threadpool.md)
       + [并发集合](chapter-java/concurrency-collection.md)
