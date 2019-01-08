@@ -117,11 +117,36 @@ PriorityBlockingQueue 就是 PriorityQueue 的线程安全版本，使用基于�
 + `CopyOnWriteArrayList`
 + `CopyOnWriteArraySet`
 
-`CopyOnWriteArrayList` 常用来和 `Vector` 比较。它的性能比 `Vector` 要好，尤其是读多写少的情况。
+Copy-on-write 将读/写操作区别对待：
+
++ 写操作加互斥锁，写时先将容器复制一份，写入完成后，再将原容器的引用指向新的容器
++ 读操作不加锁，可以多线程同时读
++ 读/写可以同时进行
+
+Copy-on-write 容器的特点：
+
++ 适用于读多写少的并发场景
+  + 在这种场景下，性能要比 `Vector` 好得多
++ 适合批量进行写操作，放置过多的复制带来的性能开销和内存占用
++ 使用 iterator 进行读时，读的是当前容器的 snapshot
+  + Iterator 创建之后，对容器进行的修改不会反映在 iterator 中
+  + Iterator 不会抛出 `ConcurrentModificationException`
+
+`CopyOnWriteArraySet` 由于使用数组实现（实际上是基于 `CopyOnWriteArrayList` 实现的），查找等操作的时间复杂度是 O(n)，所以适用于小集合的场景。
 
 ## 并发集合实现原理
 
-TODO
+### `ConcurrentHashMap`
+
+### `ArrayBlockingQueue`
+
+### `LinkedBlockingQueue`
+
+### `PriorityBlockingQueue`
+
+### `SynchronousQueue`
+
+### `CopyOnWriteArrayList`
 
 ## 参考
 
