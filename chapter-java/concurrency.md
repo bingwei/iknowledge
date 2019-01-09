@@ -24,7 +24,9 @@ Java 中的每个 `Thread` 都对应与操作系统的一个线程。线程创�
 
 ## 原子性与线程安全
 
-原子性、可见性、顺序性：https://crossoverjie.top/JCSprout/#/thread/Threadcore
+TODO 原子性、可见性、顺序性：https://crossoverjie.top/JCSprout/#/thread/Threadcore
+
+TODO ThreadLocal
 
 ### volatile
 

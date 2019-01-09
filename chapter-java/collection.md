@@ -48,7 +48,7 @@ TODO: 几个关键类的源码剖析
 
 ### 链表：`LinkedList`
 
-双向链表
+双向链表，Java 6 之前为双向循环链表，Java 7 去掉了循环。
 
 + 不支持随机访问，`get(i)` = O(n)
 + 插入/删除只需移动指针，不需要拷贝数据
@@ -96,6 +96,38 @@ TODO: `Vector`, `Stack`, `Hashtable`, `Enumeration`
 + `CopyOnWriteArrayList` 可以解决 concurrent modification 的问题
   + 迭代器反映当前容器的 snapshot
 
+## 对容器元素的要求
+
+### 比较相等： `equals()` 与 `hashCode()`
+
++ 覆盖 `equals()` 表达“值相等”的含义
+  + `equals()` 应当满足自反性、对称性、传递性
+  + `equals()` 的参数类型必须是 `Object`，这样才能保证重写 `Object.equals()`
++ 覆盖 `equals()` 时同时也要覆盖 `hashCode()`
+  + Java 约定：相等的对象必须有相等的 hash code
+  + `HashMap`, `HashSet`, `Hashtable` 的 key 使用 hash code 进行散列
+  + 如果只覆盖 `equals()`，而不覆盖 `hashCode()`，`HashMap` 等无法正常工作
+
+自己的例子：ASM 返回的 class descriptor，使用 `ClassName` 类来表示，内部根据 '$' 分离出 class name 和 inner names。又需要使用 `ClassName` 作为 key 来去重，得到不重复的 class names。于是 `ClassName` 覆盖了 `hashCode()`。
+
+参考：_Effective Java_ #8, #9
+
+### 比较大小： `compareTo()` 与 `Comparator`
+
++ 覆盖 `compareTo()` 表达“值大小”的含义
+  + `compareTo()` 应当满足反对称性、传递性
+  + 使用 <, <=，>, >=, = 来比较整数基本类型
+  + 使用 `Float.compare(f1, f2)` 和 `Double.compare(d1, d2)` 来比较浮点数
++ `compareTo()` 的关系应当与 `equals()` 的关系一致
+  + `TreeMap`, `TreeSet` 等的 key 使用 `compareTo()` 进行比较（如果没有外部 `Comparator`）
+  + 如果不遵守，`TreeMap` 工作时就无法遵守 `Map` 的（基于 `equals` 的）约定
+  + 反例：`BigDecimal("1.0")` 和 `BigDecimal("1.00")`
+    + `equals()` 返回 false，而 `compareTo()` 返回 0
+    + 将它们添加到 `HashMap` 中（使用 `equals` / `hashCode`），size = 2
+    + 将它们添加到 `TreeMap` 中（使用 `compareTo`），size = 1
+
+参考：_Effective Java_ #12
+
 ## 其他
 
 哪些集合接受 null value？
@@ -104,7 +136,8 @@ TODO: `Vector`, `Stack`, `Hashtable`, `Enumeration`
   + `ArrayList`
   + `LinkedList`
   + `CopyOnWriteArrayList`
-  + `HashSet`?, `LinkedHashSet`?
+  + `HashMap` (key 和 value 皆可)
+  + `HashSet`
 + 不接受
   + `TreeSet`?
   + `ConcurrentSkipListSet`

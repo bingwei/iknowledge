@@ -8,8 +8,13 @@ TODO list:
   + JVM 的执行过程
   + JIT
 + 垃圾回收
+  + JVM 参数
 + 类加载器
   + 双亲委派模型
+
+## 垃圾回收 Garbage collection
+
+![Java GC arguments](jvm/java-gc-args.png)
 
 ## 参考
 

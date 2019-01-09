@@ -46,7 +46,7 @@ synchronized (list) {
 + `Stack`，使用 `Deque` 的实现类代替
 + `Hashtable`，并发版本的 `HashMap`，使用 `ConcurrentHashMap` 代替
 
-TODO：这些集合有什么缺点
+`StringBuffer` (同步版本的 `StringBuilder`) 也相当于 synchronized collection。它实际上就是在 `StringBuilder` 的方法上加了 `synchronized`。
 
 ## Concurrent collections 并发集合 (since Java 5)
 
@@ -87,6 +87,9 @@ TODO：ConcurrentModificationException
 + `ConcurrentSkipListMap` 是并发版本的 `TreeMap`
 
 `ConcurrentHashMap` 常用来和 `Hashtable` 比较。`ConcurrentHashMap` 使用**分段锁**，性能要比 `Hashtable`（使用**全表锁**）好很多。
+
+TODO `ConcurrentHashMap` 在 Java 7 和 Java 8 的实现还不一样。
+https://github.com/Snailclimb/JavaGuide/blob/master/Java%E7%9B%B8%E5%85%B3/%E8%BF%99%E5%87%A0%E9%81%93Java%E9%9B%86%E5%90%88%E6%A1%86%E6%9E%B6%E9%9D%A2%E8%AF%95%E9%A2%98%E5%87%A0%E4%B9%8E%E5%BF%85%E9%97%AE.md#concurrenthashmap%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E7%9A%84%E5%85%B7%E4%BD%93%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F%E5%BA%95%E5%B1%82%E5%85%B7%E4%BD%93%E5%AE%9E%E7%8E%B0
 
 ### 阻塞队列： `BlockingQueue`
 
