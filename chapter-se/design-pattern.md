@@ -1,8 +1,15 @@
 # 设计模式
 
-如何学习设计模式：要能讲解出来，能举出例子。
+## 设计原则
 
-分类（以 GoF 书籍为准）：
++ 面向接口编程，而不是面向实现
++ 职责单一原则
+  + 每个类都应该只有一个单一的功能，并且该功能应该由这个类完全封装起来
++ 对修改关闭，对扩展开放
+
+## 分类
+
+GoF 上的 23 个设计模式：
 
 + 创建型模式 (creational patterns)
   + Singleton 单例
@@ -104,7 +111,7 @@ public enum Singleton {
 
 ### 目的
 
-封装对象的创建过程。
+封装对象的创建过程。核心是：先把所有的属性都设置给 builder，然后 `build()` 方法的时候，将这些属性复制给实际产生的对象。
 
 ### 例子
 
@@ -146,9 +153,11 @@ Request request = new Request.Builder()
 
 ### Abstract Factory Pattern 抽象工厂模式
 
-+ 目的：封装**对象家族**创建的过程
++ 目的：封装**对象家族（产品族）**创建的过程
 + 方法：定义抽象工厂类，包含多个创建不同对象的接口，让子类决定实例化哪一个类
 + 产品：创建的对象家族有相同的**接口家族**，client 通过接口家族引用对象
+
+例如，定义电脑工厂抽象类，有生产 CPU、生产主板、生产硬盘等工厂方法，一个具体的电脑工厂生产一个品牌的系列产品，避免产品不兼容的问题。接口为 CPU、主板、硬盘。
 
 特点：
 
@@ -213,7 +222,7 @@ _Head First Design Patterns_ 第 7 章中的家庭影院的例子：用一个接
 
 ### 典型特征
 
-对象A（代理对象）将功能委托给对象B（被代理对象），两个对象**接口相同**
+对象A（代理对象）将功能委托给对象B（被代理对象），两个对象**接口相同**（代理看起来就像真正的对象，所以当然接口要相同）。
 
 ### 例子
 
@@ -280,7 +289,7 @@ Spring AOP 基于动态代理实现。
 
 ## Composite Pattern 组合模式
 
-TODO
+组合模式用于表示具有层次结构（树形结构）的数据，使得我们对单个对象和组合对象的访问具有一致性。
 
 ## Strategy Pattern 策略模式
 
@@ -312,6 +321,15 @@ API 中没有找到好的例子，但实际系统中应该经常能用到。
 + _Head First Design Patterns_ 第 10 章
 
 ## Observer Pattern 观察者模式
+
+### 用法
+
+两个核心操作：
+
++ 观察者订阅自己关心的主题
++ 主题有数据变化后通知观察者们
+
+### 例子
 
 Java 标准库中有 `java.util.Observable` 类和 `java.util.Observer` 类。但 `Observable` 类有明显的缺点，一般没有人用。可以使用 Guava 中的 `EventBus`。
 
@@ -386,6 +404,10 @@ Java 正则表达式中的 `Pattern`
 解释器模式和 parser 无关，它不关注如何构造一个 AST。
 
 ## Template Method Pattern 模板方法模式
+
+模板方法只负责定义第一步应该要做什么，第二步应该做什么，第三步应该做什么，至于怎么做，由子类来实现。
+
+### 例子
 
 + `java.io.InputStream`, `java.io.Reader` 中的 `read()` 等； `java.io.OutputStream`, `java.io.Writer` 中的 `write()` 等
 + `java.util.AbstractList` 中的 `add()`, `get()`, `remove()` 等；`java.util.AbstractMap` 中的 `put()`, `entrySet()`等

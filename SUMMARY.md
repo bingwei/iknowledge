@@ -29,8 +29,5 @@
 + [软件工程](chapter-se/README.md)
   + [面向对象编程](chapter-se/oo.md)
   + [设计模式](chapter-se/design-pattern.md)
-    + [创建型模式](chapter-se/design-pattern-creational.md)
-    + [行为型模式](chapter-se/design-pattern-behavioral.md)
-    + [结构型模式](chapter-se/design-pattern-structural.md)
   + [程序员修养](chapter-se/programmer-cultivation.md)
 + [JPF](chapter-jpf/README.md)
