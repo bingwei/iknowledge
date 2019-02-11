@@ -26,6 +26,8 @@
     + [面向切面编程 (AOP)](chapter-java/aop.md)
   + 内部原理
     + [JVM](chapter-java/jvm.md)
++ [Python](chapter-python/README.md)
+  + [Python 并发](chapter-python/concurrency.md)
 + [软件工程](chapter-se/README.md)
   + [面向对象编程](chapter-se/oo.md)
   + [设计模式](chapter-se/design-pattern.md)
