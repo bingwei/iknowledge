@@ -79,17 +79,19 @@ synchronized (list) {
 
 并发集合的 iterator 不会抛出 `ConcurrentModificationException` 异常。
 
-TODO：ConcurrentModificationException
-
 ### ConcurrentMap
 
 + `ConcurrentHashMap` 是并发版本的 `HashMap`
 + `ConcurrentSkipListMap` 是并发版本的 `TreeMap`
 
-`ConcurrentHashMap` 常用来和 `Hashtable` 比较。`ConcurrentHashMap` 使用**分段锁**，性能要比 `Hashtable`（使用**全表锁**）好很多。
+`ConcurrentHashMap` 常用来和 `Hashtable` 比较。`Hashtable` 使用**全表锁**，只能有一个线程同时进行 put/get 操作。`ConcurrentHashMap` 通过细粒度的锁进行优化。
 
-TODO `ConcurrentHashMap` 在 Java 7 和 Java 8 的实现还不一样。
-https://github.com/Snailclimb/JavaGuide/blob/master/Java%E7%9B%B8%E5%85%B3/%E8%BF%99%E5%87%A0%E9%81%93Java%E9%9B%86%E5%90%88%E6%A1%86%E6%9E%B6%E9%9D%A2%E8%AF%95%E9%A2%98%E5%87%A0%E4%B9%8E%E5%BF%85%E9%97%AE.md#concurrenthashmap%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E7%9A%84%E5%85%B7%E4%BD%93%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F%E5%BA%95%E5%B1%82%E5%85%B7%E4%BD%93%E5%AE%9E%E7%8E%B0
++ Java 7 `ConcurrentMap`: 对每个 segment 加锁
+  + `Segment` 继承 `ReentrantLock`，自己本身是锁
+  + 每个 segment 包含数组+链表，类似一个 HashMap (1.7)
++ Java 8 `ConcurrentMap`: 对每个桶元素加锁
+  + 在 HashMap (1.8) 的基础上，对链表或红黑树的首结点加锁
+  + 使用 CAS 和 `synchronized` 加锁
 
 ### 阻塞队列： `BlockingQueue`
 

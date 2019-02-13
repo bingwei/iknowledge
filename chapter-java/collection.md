@@ -48,24 +48,46 @@ TODO: 几个关键类的源码剖析
 
 ### 链表：`LinkedList`
 
-双向链表，Java 6 之前为双向循环链表，Java 7 去掉了循环。
+双向链表
 
 + 不支持随机访问，`get(i)` = O(n)
 + 插入/删除只需移动指针，不需要拷贝数据
 
 注意没有 `LinkedDeque` 类，只有 `LinkedList`。`LinkedList` 既实现了 `List` 接口，也实现了 `Deque` 接口。
 
++ Java 6 之前为双向循环链表
+  + 使用一个 dummy entry，`header` 指向 dummy entry
+  + 在尾部插入实际上就是在 `header` 的前面插入
++ Java 7 去掉了循环
+  + 使用 `first`, `last` 分别指向链表头部和尾部
+
+
 ### 散列表：`HashMap`
 
-散列表
+散列表的实现原理：
 
-+ Bucket 大小设置为 2 的幂，取模操作转化为位操作
-+ 对于 hash 冲突，使用链表连接
++ 计算 hash
+  + 调用 `key.hashCode()` 得到 hash code
+  + 使用扰动函数处理 hash code，得到最终的 hash 值
+    + 扰动函数可以避免 `hashCode()` 方法实现得太差，导致太多 hash 冲突
++ 寻找 bucket
+  + Bucket 的数量设置为 2 的幂（默认初始值 16）
+    + 取模操作转化为位操作，计算方便
+  + 对比：`Hashtable` 的 bucket 数量为质数
++ 处理 hash 冲突
+  + Java 7 以前，直接使用（单？）链表
   + Java 8 以后，当链表长度超过阈值 (8)，链表会转化成**红黑树**
++ 扩容 (resize)
+  + 扩容阈值 threshold = bucket 数量 * load factor
+  + 当 size > threshold 时扩容
+  + Load factor 默认为 0.75
+  + Java 8 的新扰动函数，使得扩容时不需要重新计算 hash
 
 ### 平衡树：`TreeMap`
 
 `TreeMap` 底层使用红黑树实现。https://zhuanlan.zhihu.com/p/24795143?refer=dreawer
+
+使用 `TreeMap` 时，要么在构造时传入 comparator，要么每个 key 实现 `Comparable` 接口，否则会抛出 `ClassCastException`。
 
 ### 散列表 + 链表：`LinkedHashMap`
 
@@ -77,6 +99,8 @@ TODO: 几个关键类的源码剖析
 ### 其他
 
 TODO: `Vector`, `Stack`, `Hashtable`, `Enumeration`
+
+`ArrayList` 实现了 `RandomAccess` 接口。`RandomAccess` 是空接口，只是起到标识作用。在 `binarySearch()` 方法中，如果传入的 list 实现了 `RandomAccess` 接口，则调用 `indexedBinarySearch()`，否则调用 `iteratorBinarySearch()` 方法。
 
 集合类如果不支持某个操作，会抛出 `UnsupportedOperationException`。
 
