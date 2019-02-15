@@ -6,49 +6,13 @@
 + [《深入浅出 Java Concurrency》系列文章](http://www.blogjava.net/xylz/archive/2010/07/08/325587.html)
 + [Java Tutorials: Concurrency](https://docs.oracle.com/javase/tutorial/essential/concurrency/index.html)
 
-可以分为五个部分的内容：
+## Contents
 
-+ 原子性/线程安全
++ [原子性/线程安全](concurrency-threadsafety.md)
 + [任务与线程池](concurrency-threadpool.md)
-+ [并发集合](concurrency-collection.md)
-+ [同步机制](concurrency-sync.md)
 + [锁](concurrency-lock.md)
-
-TODO list：
-
-+ `StringBuilder` 和 `StringBuffer` 什么区别？ `StringBuffer` 是否是类似 `Vector` 的 synchronized collection?
-
-## 线程
-
-Java 中的每个 `Thread` 都对应与操作系统的一个线程。线程创建的数量有上限。
-
-## 原子性与线程安全
-
-TODO 原子性、可见性、顺序性：https://crossoverjie.top/JCSprout/#/thread/Threadcore
-
-TODO ThreadLocal
-
-### volatile
-
-`volatile` 关键字是关于 visibility 的。
-
-+ 防止编译器进行不正确的优化（指令重排等）
-+ 每一次变量值的修改都直接写到主存中（而不是寄存器或 cache）
-
-```Java
-public class ExampleTask implements Runnable {
-
-    private volatile boolean cancelled;
-
-    public void run() {
-        while (!cancelled) {
-            compute();
-        }
-    }
-
-    public void cancel() { cancelled = true; }
-}
-```
++ [同步机制](concurrency-sync.md)
++ [并发集合](concurrency-collection.md)
 
 ## Java 不同版本的并发编程设施变化
 

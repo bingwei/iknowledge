@@ -14,10 +14,6 @@ Mutex 即 _mutural exclusion lock_。只有一个线程可以拥有这个锁。
 
 参考：_Java Concurrency in Practice_ 2.3.2
 
-### Guarded by
-
-对于一个可变的状态变量，如果每次对该变量的读/写都需要在拥有同一个特定的锁时进行，则称这个变量是 _guarded by_ 这个锁。这样可以保证在同一时刻只有一个线程访问(读/写)这个变量。
-
 ### 可中断锁
 
 + `synchronized` -- 不可中断锁
@@ -37,7 +33,7 @@ Mutex 即 _mutural exclusion lock_。只有一个线程可以拥有这个锁。
 
 ## `synchronized` 关键字
 
-`synchronized` 关键字本质上是对某个对象上锁，互斥锁，可重入锁。
+`synchronized` 关键字本质上是对某个对象上锁，称为 _built-in lock_ 或 _intrinsic lock_，互斥锁，可重入锁。
 
 + _Synchronized block_
   + 括号内的对象是 lock object

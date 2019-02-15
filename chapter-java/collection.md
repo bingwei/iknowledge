@@ -164,6 +164,7 @@ TODO: `Vector`, `Stack`, `Hashtable`, `Enumeration`
   + `HashSet`
 + 不接受
   + `TreeSet`?
+  + `ConcurrentHashMap`
   + `ConcurrentSkipListSet`
   + `ArrayDeque`
 

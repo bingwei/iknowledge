@@ -76,8 +76,9 @@ synchronized (list) {
 + `HashMap` -> `ConcurrentHashMap`
 + `TreeMap` -> `ConcurrentSkipListMap`
 + `TreeSet` -> `ConcurrentSkipListSet`
++ `PriorityQueue` -> `PriorityBlockingQueue`
 
-并发集合的 iterator 不会抛出 `ConcurrentModificationException` 异常。
+并发集合的 iterator 不会抛出 `ConcurrentModificationException` 异常（参见 Java Collection Framework 章节）。
 
 ### ConcurrentMap
 
@@ -103,7 +104,7 @@ synchronized (list) {
 | 删除元素 | `remove()` | `poll()` | `take()` | `poll(time, unit)` |
 | 查看头部元素 | `element()` | `peek()` | N/A | N/A |
 
-三个默认的线程池实现都用到了 blocking queue（两个用 `LinkedBlockingQueue`，一个用 `SynchronousQueue`。
+三个默认的线程池实现都用到了 blocking queue（两个用 `LinkedBlockingQueue`，一个用 `SynchronousQueue`）。
 
 ArrayBlockingQueue：数组实现，有限容量，`ReentrantLock` 控制。
 
@@ -117,10 +118,7 @@ PriorityBlockingQueue 就是 PriorityQueue 的线程安全版本，使用基于�
 
 这两个类内部使用 CAS 来保证线程安全。
 
-### Copy-on-write (COW) 容器
-
-+ `CopyOnWriteArrayList`
-+ `CopyOnWriteArraySet`
+### Copy-on-write (COW) 容器：`CopyOnWriteArrayList`, `CopyOnWriteArraySet`
 
 Copy-on-write 将读/写操作区别对待：
 
@@ -132,7 +130,7 @@ Copy-on-write 容器的特点：
 
 + 适用于读多写少的并发场景
   + 在这种场景下，性能要比 `Vector` 好得多
-+ 适合批量进行写操作，放置过多的复制带来的性能开销和内存占用
++ 应当尽量批量进行写操作，防止过多的性能开销和内存占用
 + 使用 iterator 进行读时，读的是当前容器的 snapshot
   + Iterator 创建之后，对容器进行的修改不会反映在 iterator 中
   + Iterator 不会抛出 `ConcurrentModificationException`

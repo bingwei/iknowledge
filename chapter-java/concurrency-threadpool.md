@@ -22,6 +22,8 @@
 
 ## 线程
 
+Java 中的每个 `Thread` 都对应于操作系统的一个线程。线程创建的数量有上限。
+
 线程的五种状态：
 
 + *新建 (new)*：新创建了一个线程对象
@@ -102,7 +104,7 @@
 
 ### ThreadPoolExecutor 的创建参数
 
-`Executors.newXxxThreadPool` 都是调用 `new ThreadPoolExecutor(...)`，传递不同的参数来构建几个默认情况下的线程池。`ThreadPoolExecutor` 接收的参数为：
+`Executors` 中创建线程池的静态工厂都是调用了 `ThreadPoolExecutor` 的 constructor，并传递不同的参数。`ThreadPoolExecutor` 接收的参数为：
 
 + `corePoolSize: int` 线程数量下限/基准数量
 + `maxPoolSize: int` 线程数量上限

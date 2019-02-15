@@ -61,6 +61,7 @@ public class Singleton {
 Lazy initialization (Double checked locking):
 
 ```Java
+// volatile 关键字的具体分析见 Java Concurrency - 线程安全
 public class Singleton {
     // volatile 关键字是必须的，也是这个关键字的典型使用场景
     private volatile static Singleton instance;
