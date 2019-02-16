@@ -57,6 +57,14 @@ JVM 是**基于栈**的，使用操作数栈 (operand stack)，而不是**基于
   + 第一个参数需要是对象引用
   + 无返回值
 
+上锁：
+
++ Case 1: synchronized method
+  + 方法添加 `ACC_SYNCHRONIZED` 标识
++ Case 2: `synchronized (obj)`
+  + 在同步块的开始/结束位置使用 `monitorenter` / `monitorexit` 指令
+  + 要上锁的对象放在栈顶
+
 IA-32 汇编指令与 Java 字节码指令的对比
 
 | | 汇编 | 字节码 |
@@ -68,6 +76,20 @@ IA-32 汇编指令与 Java 字节码指令的对比
 | 栈帧管理 | 函数一开始保存 `%ebp` 旧值，以及移动 `%esp` | 自动管理，包括传递操作数栈或局部变量数组的内容 |
 | 参数传递 | 调用者放在自己的栈帧底部，被调用者从调用者栈帧获取 | 调用者放在自己的操作数栈，会自动拷贝到被调用者的局部变量数组，被调用者从自己的局部变量数组中获取 |
 | 返回值传递 | 一般放在 `%eax` 寄存器中 | 被调用者放在自己的操作数栈，会自动拷贝到调用者的操作数栈，调用者从自己的操作数栈中获取 |
+
+## 对象内存布局
+
++ _Object header_ 对象头
+  + _Mark word_ (4B on 32-bit-arch, 8B on 64-bit-arch)
+    + 保存了锁的状态（因此每个 Java 对象都可以作为锁）
+  + _Klass pointer_ (4B on 32-bit-arch, 4B/8B on 64-bit-arch)
+    + 指向对象的类的元数据的指针
++ Instance data 实例数据
+  + 各种 field
++ Padding 对齐填充
+  + 按 8 字节对齐
+
+![Mark word in Java object header](jvm/object-header-mark-word.png)
 
 ## 垃圾回收 Garbage collection
 

@@ -20,7 +20,18 @@
 
 ### Race condition 竞争条件
 
-多个线程并发执行，都访问并修改同一共享变量时（特别是复合操作 _read-modify-write_ 或 _check-then-act_），线程的调度顺序可能会导致程序输出错误的结果。也就是说，多个线程相互“竞争”共享变量。
+Race condition 的定义：多个线程并发执行，都访问并修改同一共享变量时（特别是复合操作 _read-modify-write_ 或 _check-then-act_），线程的调度顺序可能会导致程序输出错误的结果。那么我们说线程的调度顺序导致了 race condition，也就是多个线程相互“竞争”共享变量。
+
+Data race 的定义：当两个线程中的指令访问同一个内存位置，且其中至少一个是写操作，并且没有同步操作控制先后顺序，则此处是一个 data race。
+
+**Data race 和 race condition 是两个概念**。Data race 描述明确，可以自动化判断；而 race condition 是一个语义上的概念。很多 race condition 是由于 data race 导致的，但也不是所有的。Data race 也不一定会导致 race condition。
+
+在编程中，我们应该关注的是语义层面上的 race condition。
+
+参考：
+
++ [StackOverflow - Are “data races” and “race condition” actually the same thing in context of concurrent programming?](https://stackoverflow.com/questions/11276259/are-data-races-and-race-condition-actually-the-same-thing-in-context-of-conc)
++ [Race Condition vs. Data Race](https://blog.regehr.org/archives/490)
 
 ### Guard
 
@@ -149,27 +160,56 @@ public class Singleton {
 
 + [Java 多线程三大核心 - 原子性、可见性、顺序性](https://crossoverjie.top/JCSprout/#/thread/Threadcore)
 
-## Safety, Liveness & Performance
+## Liveness problems
+
+程序陷入某个无法跳出的状态，类似于单线程程序中的无限循环。这种问题也一般是在特定的线程调度下会触发。
 
 + Safety: "nothing bad ever happens"
 + Liveness: "something good eventually happens"
 
 注意：单线程程序中也可能出现 safety problems，但 liveness problems 只可能在多线程程序中出现。
 
-### Safety problems
-
-即线程不安全，参考 race condition
-
-### Liveness problems
-
-程序陷入某个无法跳出的状态，类似于单线程程序中的无限循环。这种问题也一般是在特定的线程调度下会触发。三种典型的 liveness problems:
-
-+ Deadlock
-+ Starvation
-+ Livelock
-
 注意：liveness problems 不等于 deadlock，而是从属关系
 
-### Performance problems
+### Deadlock 死锁
+
+多个线程**互相等待**其他线程释放锁（系统资源），导致线程**无法改变其状态**，从而**永远等待**。
+
+[哲学家就餐问题](https://zh.wikipedia.org/wiki/%E5%93%B2%E5%AD%A6%E5%AE%B6%E5%B0%B1%E9%A4%90%E9%97%AE%E9%A2%98)是一个典型的 deadlock 例子。
+
+数据库系统可以检测并从死锁中恢复，而 Java 程序不可以。
+
+Lock-ordering deadlock：多个线程都需要相同的一组锁，但是它们以不同的顺序获取锁。解决方法：对锁排序，程序中的所有线程都以固定的顺序获取锁，任何锁的顺序都是可行的，但是需要所有线程统一。
+
+但是实际场景中，lock ordering 不是那么明显，可能两个相互协作的类会出现 lock ordering 的错误——在自己的 synchronized 方法中调用对方的 synchronized 方法。
+
+在持有锁的情况下，调用可能阻塞的陌生方法，有死锁的风险。因此，应当限制上锁代码块的大小，尽量在不持有锁的情况下调用其他 method （称为 _open call_）。
+
+死锁的发生当且仅当以下四个条件同时满足（_Coffman conditions_）：
+
++ 互斥 (mutual exclusion)：至少一种资源是以互斥的方式共享的，即任意时刻只能有一个线程使用该资源
++ 持有并等待 (hold and wait)：一个线程正持有至少一种资源，并正请求另一种其他线程持有的资源
++ 无特权 (no preemption)：资源只能由持有的线程自愿释放
++ 循环等待 (circular wait)：有一组线程，呈有向环的结构互相等待
+
+### Livelock 活锁
+
+与死锁类似，但线程的状态可以改变，线程**不断重试永远失败的操作**，从而**永远等待**。
+
+Livelock 可以看作是 starvation 的特殊情况。
+
+### Starvation 饥饿
+
+一个线程**永远无法获得 (perpetually denied)** 需要的资源（通常是 CPU 周期），因而无法继续执行。
+
+Starvation 通常是由不正确的**调度算法**导致，某些线程无法获得 CPU 时间。Java 中，如果随意设置线程优先级，可能导致饥饿问题。
+
+Starvation 的弱化版本是 poor responsiveness。
+
+Starvation 不一定是由互斥导致，资源泄漏或 DoS 攻击也可能导致 starvation。
+
+## Performance problems
 
 如果锁住的代码块过大（例如整个方法块），会导致同一时刻只能有一个线程执行该方法，多线程情况下可能会执行缓慢。要缓解这个问题，需要将大的 synchronized block 拆分为小的。Performance 和 simplicity 之间需要权衡。
+
+TODO JCIP Chapter 11
