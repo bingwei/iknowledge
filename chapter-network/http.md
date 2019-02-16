@@ -1,15 +1,119 @@
 # HTTP
 
-Forward 和 redirect:
+请求 (_request_) / 应答 (_response_)
+
+## 消息格式
+
+HTTP 请求的格式：
+
++ Request line
+  + 例如，`GET /images/logo.png HTTP/1.1`
++ Request header fields
++ 一个空行
++ Message body (可选)
+
+HTTP 响应的格式：
+
++ Status line
+  + 例如，`HTTP/1.1 200 OK`
++ Response header fields
++ 一个空行
++ Message body (可选)
+
+## 请求方法 (method)
+
++ GET
++ HEAD
++ POST
++ PUT
++ PATCH —— 修改部分资源
++ DELETE
++ TRACE —— 回显服务器收到的请求，主要用于测试或诊断
++ OPTIONS —— 使服务器传回该资源所支持的所有 HTTP 请求方法
++ CONNECT —— HTTP/1.1 协议中预留给能够将连接改为管道方式的代理服务器，通常用于 SSL 加密服务器的链接
+
+HTTP 服务器至少应该实现 GET 和 HEAD 方法，其他方法都是可选的。
+
+### 安全性
+
+如果一个方法是安全的 (_safe_)，那么使用这个方法请求应当只返回信息，而不会改变 server 的状态。安全的=无副作用的。
+
+### 幂等性
+
+如果一个方法是幂等 (_idempotent_) 的，那么使用这个方法请求任意次和请求一次的效果相同。无副作用的方法一定是幂等的。
+
++ 幂等方法
+  + 无副作用：GET, HEAD, OPTIONS, TRACE
+  + 有副作用：PUT, DELETE
++ 非幂等方法
+  + POST, PATCH
+
+PATCH 方法不一定是幂等的，由于是部分修改资源，可能第一次修改是合法的，而第二次以后的修改就会报错（例如：patch 的格式为 `{'change': 'name', 'from':, 'Benjamin Franklin', 'to': 'John Doe'}`）。不过服务器可以选择将 PATCH 方法实现为幂等的。
+
+![HTTP methods](img/http-methods.png)
+
+## HTTP 状态码 (status code)
+
++ 1xx —— 信息性状态码
++ 2xx —— 成功状态码
+  + 200 OK —— 最普通的状态码
+  + 201 Created —— POST 请求的返回码
+  + 204 No Content —— DELETE 请求的返回码
++ 3xx —— 重定向状态码
+  + 301 Moved Permanently —— 需要客户端进行重定向
+    + 在 header 的 `Location` 中告知新的地址
+    + 客户端以后应当去新地址下载
+  + 302 Found (Moved Temporarily) —— 需要客户端进行重定向
+    + 在 body 中告知新的地址
+    + 客户端以后仍应在原地址下载
+  + 304 Not Modified —— 客户端人可以使用之前缓存的内容
+    + 需要 header 中 `If-Modified-Since` 或 `If-None-Match`
++ 4xx —— 客户端错误状态码
+  + 400 Bad Request —— 明显的客户端错误
+  + 401 Unauthorized —— 没有提供认证信息
+  + 403 Forbidden —— 服务器已经理解请求，但是拒绝执行
+  + 404 Not Found —— 请求的内容不存在
+    + 如果服务器不想透露请求为何拒绝，可以使用 404
+  + 405 Method Not Allowed —— 不支持该 method (如 PUT)
+  + 406 Not Acceptable —— 资源格式不符合要求
++ 5xx —— 服务器错误状态码
+  + 500 Internal Server Error —— 通用错误消息
+  + 501 Not Implemented —— 服务器未实现该功能
+  + 502 Bad Gateway —— 网关(代理)返回的错误
+  + 503 Service Unavailable —— 服务暂时不可用（如由于维护）
+
+### Forward 和 redirect
 
 + Forward (转发): 服务器行为，服务器获取跳转页面内容传给用户，用户地址栏不变
 + Redirect (重定向): 客户端行为，本质上为两次请求，地址栏改变，前一次请求对象消失
   + HTTP 301
 
-TODO Cookie 和 Session
-https://www.zhihu.com/question/19786827
+## HTTP header fields
+
+分为 _request fields_ 和 _response fields_。非标准的 fields 一般以 `X-` 开头。
+
+详见：[List of HTTP header fields](https://en.wikipedia.org/wiki/List_of_HTTP_header_fields)
+
+## HTTPS
+
+HTTPS 实际上就是 HTTP + SSL/TLS。即先用 SSL 或 TLS 对 HTTP 报文进行加密，再作为 TCP 数据进行传输。从网络的层级结构来看，SSL/TLS 位于 TCP 之上，HTTP 之下。
+
+HTTPS 在传输数据之前需要客户端与服务器进行一个握手 (TLS/SSL 握手)，在握手过程中将确立双方加密传输数据的密码信息。
+
+参考：[图解 SSL/TLS 协议](http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html)
+
+## HTTP 长连接 (keep-alive)
+
+_HTTP 持久连接 (HTTP persistent connection, HTTP keep-alive, HTTP connection reuse)_ 是指使用同一个 TCP 连接来发送和接收多个 HTTP 请求/应答，而不是每个 HTTP 请求/应答 就打开一个新的连接。
+
+HTTP/1.0 中没有内置的 keep-alive 的支持。需要使用 header field: `Connection: Keep-Alive`，在请求和响应中均添加该 header field。
+
+在 HTTP 1.1 中，所有的连接默认都是持续连接，除非显示声明关闭。
 
 ## Stateful web service
+
+TODO Cookie 和 Session
+https://www.zhihu.com/question/19786827
 
 Stateful / stateless application:
 
