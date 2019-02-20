@@ -1,24 +1,30 @@
 # HTTP
 
-请求 (_request_) / 应答 (_response_)
++ 运行在 TCP 之上
++ 使用 80 端口 / 443 端口 (HTTPS)
++ 请求 (_request_) / 响应，应答 (_response_)
 
 ## 消息格式
 
+注意：每一行末尾使用 CR LF (`"\r\n"`) 换行。
+
 HTTP 请求的格式：
 
-+ Request line
++ _Request line_
   + 例如，`GET /images/logo.png HTTP/1.1`
-+ Request header fields
++ _Request header fields_
+  + 每行一个 header field
 + 一个空行
-+ Message body (可选)
++ _Message body, entity body_ (可选)
+  + GET 方法的 entity body 为空
 
 HTTP 响应的格式：
 
-+ Status line
++ _Status line_
   + 例如，`HTTP/1.1 200 OK`
-+ Response header fields
++ _Response header fields_
 + 一个空行
-+ Message body (可选)
++ _Message body, entity body_ (可选)
 
 ## 请求方法 (method)
 
@@ -60,7 +66,7 @@ PATCH 方法不一定是幂等的，由于是部分修改资源，可能第一�
   + 201 Created —— POST 请求的返回码
   + 204 No Content —— DELETE 请求的返回码
 + 3xx —— 重定向状态码
-  + 301 Moved Permanently —— 需要客户端进行重定向
+  + 301 Moved Permanently —— 需要客户端进行**重定向**
     + 在 header 的 `Location` 中告知新的地址
     + 客户端以后应当去新地址下载
   + 302 Found (Moved Temporarily) —— 需要客户端进行重定向
@@ -81,6 +87,7 @@ PATCH 方法不一定是幂等的，由于是部分修改资源，可能第一�
   + 501 Not Implemented —— 服务器未实现该功能
   + 502 Bad Gateway —— 网关(代理)返回的错误
   + 503 Service Unavailable —— 服务暂时不可用（如由于维护）
+  + 505 HTTP 协议版本不支持
 
 ### Forward 和 redirect
 
@@ -92,7 +99,39 @@ PATCH 方法不一定是幂等的，由于是部分修改资源，可能第一�
 
 分为 _request fields_ 和 _response fields_。非标准的 fields 一般以 `X-` 开头。
 
+### 常见的 header fields
+
++ 请求
+  + Host: 主机名
+  + Connection: keep-alive 或 close
+  + User-agent: 浏览器类型
+  + Content-Type: 如 application/x-www-form-urlencoded (POST 表单)
++ 响应
+  + Connection: keep-alive 或 close
+  + Date: 响应的日期+时间
+  + Server: 服务器类型
+  + Content-Length: TODO
+  + Content-Type: 如 text/html, text/javascript, application/json, image/jpeg
+
 详见：[List of HTTP header fields](https://en.wikipedia.org/wiki/List_of_HTTP_header_fields)
+
+### 连接相关
+
+### 缓存相关
+
++ Server: `Last-Modified`
++ Browser: `If-Modified-Since`, `If-None-Match`
+
+常见流程：
+
++ 第一次请求
+  + 浏览器发送请求
+  + 服务器的响应中包含 `Last-Modified: [date + time]`
+  + 浏览器缓存该文件，并保存 date + time
++ 后续请求
+  + 浏览器发送条件 GET 请求，包含 `If-Modified-Since: [date + time]`
+  + 如果文件未被修改，则服务器返回 304 Not Modified
+  + 如果文件被修改了，服务器返回新的文件
 
 ## HTTPS
 
@@ -104,7 +143,7 @@ HTTPS 在传输数据之前需要客户端与服务器进行一个握手 (TLS/SS
 
 ## HTTP 长连接 (keep-alive)
 
-_HTTP 持久连接 (HTTP persistent connection, HTTP keep-alive, HTTP connection reuse)_ 是指使用同一个 TCP 连接来发送和接收多个 HTTP 请求/应答，而不是每个 HTTP 请求/应答 就打开一个新的连接。
+_HTTP 持续连接 (HTTP persistent connection, HTTP keep-alive, HTTP connection reuse)_ 是指使用同一个 TCP 连接来发送和接收多个 HTTP 请求/应答，而不是每个 HTTP 请求/应答 就打开一个新的连接。
 
 HTTP/1.0 中没有内置的 keep-alive 的支持。需要使用 header field: `Connection: Keep-Alive`，在请求和响应中均添加该 header field。
 
