@@ -15,8 +15,8 @@ HTTP 请求的格式：
 + _Request header fields_
   + 每行一个 header field
 + 一个空行
-+ _Message body, entity body_ (可选)
-  + GET 方法的 entity body 为空
++ _Message body_ (可选)
+  + GET 方法的 message body 为空
 
 HTTP 响应的格式：
 
@@ -24,7 +24,7 @@ HTTP 响应的格式：
   + 例如，`HTTP/1.1 200 OK`
 + _Response header fields_
 + 一个空行
-+ _Message body, entity body_ (可选)
++ _Message body_ (可选)
 
 ## 请求方法 (method)
 
@@ -103,33 +103,78 @@ PATCH 方法不一定是幂等的，由于是部分修改资源，可能第一�
 
 + 请求
   + Host: 主机名
-  + Connection: keep-alive 或 close
+  + Connection
   + User-agent: 浏览器类型
-  + Content-Type: 如 application/x-www-form-urlencoded (POST 表单)
+  + Content-Type
+  + Content-Length
 + 响应
-  + Connection: keep-alive 或 close
+  + Connection
   + Date: 响应的日期+时间
   + Server: 服务器类型
-  + Content-Length: TODO
-  + Content-Type: 如 text/html, text/javascript, application/json, image/jpeg
+  + Content-Length
+  + Content-Type
 
 详见：[List of HTTP header fields](https://en.wikipedia.org/wiki/List_of_HTTP_header_fields)
 
+### Message body 相关
+
++ 内容类型 Content-Type (request,response)
+  + 媒体类型 (_media type, MIME type_)
+  + 浏览器常用：application/x-www-form-urlencoded (POST 表单), application/json
+  + 服务器常用：text/html, text/javascript, application/json, image/jpeg
+  + 可以添加 charset 参数，例：`text/html; charset=utf-8`
++ 接受的内容类型 Accept (request)
+  + 浏览器可以接受的响应媒体类型
+  + 示例：`text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8`
++ 内容编码 Content-Encoding (response)
++ 接受的内容编码 Accept-Encoding (request)
++ 内容长度 Content-Length (request,response)
+  + Entity body 的长度（以字节为单位）
+  + 如果有压缩，则是压缩后的大小
+  + Entity body 为空时（如 GET 请求），不应当使用 Content-Length
+  + HEAD 请求的响应（特殊）返回 GET 请求时响应的 entity body 的长度
++ 内容分片传输 Transfer-Encoding (usually response)
+  + 一般是动态生成的内容，实时发送
+  + [Chunked transfer encoding - Wikipedia](https://en.wikipedia.org/wiki/Chunked_transfer_encoding)
+
+> The Content-Length entity-header field indicates the size of the entity-body, in decimal number of OCTETs, sent to the recipient or, in the case of the HEAD method, the size of the entity-body that would have been sent had the request been a GET. (RFC 2616)
+
+如何标识 message body 的长度（参考 [RFC 7230 section 3.3.3](https://tools.ietf.org/html/rfc7230#section-3.3.3)）：
+
++ 特定的 response (1xx, 204, 304)，认为 message body 为空
++ 有 `Transfer-Encoding: chunked` 时，使用 chunked transfer encoding
++ 没有 Transfer-Encoding 时，使用 Content-Length
++ 以上二者都没有时
+  + 对于 request，认为 message body 为空
+  + 对于 response，需要通过关闭连接来表明内容结束 (短连接情况)
+
 ### 连接相关
+
++ Server: `Connection: keep-alive` 或 `Connection: close`
++ Browser: `Connection: keep-alive` 或 `Connection: close`
+
+见 “HTTP 长连接”。
 
 ### 缓存相关
 
-+ Server: `Last-Modified`
-+ Browser: `If-Modified-Since`, `If-None-Match`
++ Last-Modified / If-Modified-Since
+  + 最后修改时间 Last-Modified (response)
+  + 允许 304 响应 If-Modified-Since (request)
++ Etag / If-None-Match
+  + 资源版本标识 Etag (response)
+    + 例如 MD5 hash
+  + 允许 304 响应 If-None-Match (response)
+
+时间格式均使用 RFC 7231 定义的 _HTTP-date_。
 
 常见流程：
 
 + 第一次请求
   + 浏览器发送请求
-  + 服务器的响应中包含 `Last-Modified: [date + time]`
-  + 浏览器缓存该文件，并保存 date + time
+  + 服务器的响应中包含 `Last-Modified: [datetime]`
+  + 浏览器缓存该文件，并保存 datetime
 + 后续请求
-  + 浏览器发送条件 GET 请求，包含 `If-Modified-Since: [date + time]`
+  + 浏览器发送条件 GET 请求，包含 `If-Modified-Since: [datetime]`
   + 如果文件未被修改，则服务器返回 304 Not Modified
   + 如果文件被修改了，服务器返回新的文件
 
