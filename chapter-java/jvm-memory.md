@@ -11,7 +11,7 @@
       + _Local variable_ 局部变量
       + _Operand stack_ 操作数栈
       + 返回值
-      + 指向当前方法的类的常量池
+      + 指向当前方法的类的**运行时常量池**的引用
   + _Native method stack_ 本地方法栈
 + 线程共享
   + _Heap_ 堆
@@ -23,9 +23,30 @@ JVM 是**基于栈**的，使用操作数栈 (operand stack)，而不是**基于
 
 ### Interned string
 
+TODO
+
 ### 方法区 Method Area
 
-方法区存储了 class 和 method 对象
+等价于 Linux 进程中的 **text 段**（只读代码、只读数据）。
+
+方法区存储 _per-class structures_，包括：
+
++ 运行时常量池
++ Field data
++ Method data
++ 方法（包括 `<init>` 与 `<clinit>`）的代码
+
+### 运行时常量池 Run-time constant pool
+
+类似于 C 语言中的**符号表**，但内容更加丰富。
+
+每个类有一个运行时常量池，对应 class 文件中的 `constant_pool`。
+
+### 动态链接 Dynamic linking
+
+> Dynamic linking translates these symbolic method references into concrete method references, loading classes as necessary to resolve as-yet-undefined symbols, and translates variable accesses into appropriate offsets in storage structures associated with the run-time location of these variables.
+
+动态连接是方法的**符号引用**解析为方法的**具体引用**的过程。同一方法调用的动态链接只会进行一次。
 
 ### StackOverflowError (SO) 与 OutOfMemoryError (OOM)
 
@@ -34,6 +55,7 @@ JVM 是**基于栈**的，使用操作数栈 (operand stack)，而不是**基于
   + 既可能是 VM stack 也可能是 Native method stack
 + `OutOfMemoryError` —— 堆区已满，无法为新的对象分配空间
   + 不仅是堆区，其他区域满了也可能 OOM
+  + 如果栈是动态扩展的，栈也可能会 OOM（不过栈一般还是 SO）
 
 除了 PC 之外，其他的内存区域都有可能出现 OOM。例如：
 
@@ -149,7 +171,7 @@ TODO
 
 ### 对象的创建过程
 
-分为五步：
+对象的创建过程在字节码层面，需要先使用 `new` 指令创建内存空间，再调用 `<init>` 方法。`new` 执行分为四步创建对象：
 
 + 类加载检查
   + 如果未加载，则加载
@@ -158,4 +180,3 @@ TODO
   + 保证 field 不需要赋初值就能直接使用
   + 对象头不赋值
 + 设置对象头
-+ 执行 `<init>` 方法
