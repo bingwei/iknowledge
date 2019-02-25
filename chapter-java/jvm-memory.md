@@ -2,7 +2,7 @@
 
 ## JVM 内存布局
 
-![JVM memory](jvm/jvm-memory.png)
+![JVM memory](jvm/jvm-areas.png)
 
 + 线程私有
   + _Program counter_ 程序计数器
@@ -10,19 +10,36 @@
     + _Frame_ 栈帧
       + _Local variable_ 局部变量
       + _Operand stack_ 操作数栈
-      + ...
+      + 返回值
+      + 指向当前方法的类的常量池
   + _Native method stack_ 本地方法栈
 + 线程共享
   + _Heap_ 堆
-  + _Method area_ 方法区
+  + _Permanent generation_ 永久代
+    + Interned strings
+    + _Method area_ 方法区
 
 JVM 是**基于栈**的，使用操作数栈 (operand stack)，而不是**基于寄存器**的。注意：**每个栈帧都包含一个操作数栈！**
 
-### StackOverflowError 与 OutOfMemoryError
+### Interned string
+
+### 方法区 Method Area
+
+方法区存储了 class 和 method 对象
+
+### StackOverflowError (SO) 与 OutOfMemoryError (OOM)
 
 + `StackOverflowError` —— 栈区已满，无法放入新的栈帧
+  + 一般都是由不正确的无限递归导致的
   + 既可能是 VM stack 也可能是 Native method stack
 + `OutOfMemoryError` —— 堆区已满，无法为新的对象分配空间
+  + 不仅是堆区，其他区域满了也可能 OOM
+
+除了 PC 之外，其他的内存区域都有可能出现 OOM。例如：
+
++ 堆溢出 `java.lang.OutOfMemoryError: Java heap space`
++ 永久代溢出 `java.lang.OutOfMemoryError: PermGen space`
+  + 可能是方法区溢出或是字符串常量池溢出
 
 ## 垃圾回收 Garbage collection
 
@@ -32,20 +49,24 @@ JVM 是**基于栈**的，使用操作数栈 (operand stack)，而不是**基于
 
 + _Young generation_ 新生代
   + _Eden_
-  + _S0_, _Survivor 0_
-  + _S1_, _Survivor 1_
-+ _Old generation_ 老年代
-+ _Perm_ 永久代
+  + _Survivor_： 分为 S0 和 S1
++ _Old generation_, _tenured generation_ 老年代
++ _Permanent generation (Perm Gen)_ 永久代
+  + 注意 PermGen 并不属于堆区，划分在 _non-heap_ 中。
 
-Java 8 开始废除永久代，改为 _Metaspace_（元空间）。永久代使用堆内存空间，而 metaspace 使用的是物理内存。
+Static fields 和 static methods 是在永久代中
+
+Java 8 开始废除永久代，改为 _Metaspace_（元空间）。永久代使用堆内存空间，而 metaspace 使用的是物理内存（native memory）。
 
 内存参数：
 
-+ `-Xms` —— 堆的初始大小
-+ `-Xmx` —— 堆的最大大小
-+ `-Xmn` —— 堆中年轻代的大小
-+ `-XX:PermSize` —— 永久代的初始大小，最小大小
-+ `-XX:MaxPermSize` —— 永久代的最大大小
++ `-Xms` —— 堆的大小下限、初始大小
++ `-Xmx` —— 堆的大小上限
+  + 控制的是 YoungGen + OldGen，注意**不包括 PermGen**
++ `-Xmn` —— 年轻代的大小
++ `-XX:PermSize` —— （Java 7 以前）永久代的大小下限、初始大小
++ `-XX:MaxPermSize` —— （Java 7 以前）永久代的大小上限
++ `-XX:MetaspaceSize` —— （Java 8 以后）元空间的大小
 
 ### 判断已死亡对象
 
@@ -59,22 +80,15 @@ Java 8 开始废除永久代，改为 _Metaspace_（元空间）。永久代使�
 
 ### 垃圾回收策略
 
-分配策略：
-
-+ 对象优先在 eden 区分配
-+ 大对象直接进入老年代
-+ 长期存活的对象将进入老年代
-
-GC 分为 minor GC 和 major GC：
-
-+ _Minor GC_
-  + 发生在新生代的 GC
-+ _Major GC_, _Full GC_
-  + 发生在老年代的 GC
++ 新的对象创建在新生代
++ _Minor garbage collection_ 会在新生代进行
++ _Major (full) garbage collection_ 会将仍存活的新生代对象移动至老年代
+  + 一般会使应用程序的线程暂停
++ 老年代和永久代其中任何一个满了，两个都会进行垃圾回收
 
 ### 垃圾回收算法
 
-JVM 将堆区分为三代，根据三代的不同特点，使用不同的垃圾回收算法。
+根据三代的不同特点，使用不同的垃圾回收算法。
 
 + 新生代 —— 对象存活率较低 —— 使用**复制算法**
 + 老年代 —— 对象存活率较高 —— 使用**标记-清理算法**、**标记-整理算法**
@@ -105,6 +119,17 @@ JVM 将堆区分为三代，根据三代的不同特点，使用不同的垃圾�
 ### 垃圾回收器
 
 TODO
+
+### 关于永久代
+
+永久代包括：
+
++ 方法区
++ Interned strings
+
+永久代是 _non-heap memory_ 的一部分。
+
+动态生成类的情况，容易造成永久代的 OutOfMemoryError，例如反射、动态代理、动态生成 JSP。
 
 ## Java 对象内存布局
 

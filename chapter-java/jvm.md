@@ -9,7 +9,8 @@ TODO list:
   + JIT
 + 垃圾回收
   + JVM 参数
-+ 类加载器
++ 类加载器 Class loader
+  + https://en.wikipedia.org/wiki/Java_Classloader
   + 双亲委派模型
 
 ## 参考
