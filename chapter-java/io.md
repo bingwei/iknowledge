@@ -97,6 +97,12 @@ Standard I/O:
 
 ## NIO & 通道 (Channel)
 
+TODO
+
+> JDK1.4中新加入的 NIO(New Input/Output) 类，引入了一种基于通道（Channel） 与缓存区（Buffer） 的 I/O 方式，它可以直接使用Native函数库直接分配堆外内存，然后通过一个存储在 Java 堆中的 DirectByteBuffer 对象作为这块内存的引用进行操作。这样就能在一些场景中显著提高性能，因为避免了在 Java 堆和 Native 堆之间来回复制数据。
+
+如何理解这段话？
+
 ### 概念
 
 _通道 (Channel)_ 和 _缓冲区 (Buffer)_ 是 NIO 中的核心对象，几乎在每一个 I/O 操作中都要使用它们。

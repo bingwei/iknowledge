@@ -8,7 +8,33 @@
 + volatile 关键字
 + strictfp 关键字
 
-字符串 intern
+TODO 字符串 intern
+
+### Checked exception
+
+Java 中异常类的继承关系：
+
++ `Throwable`
+  + `Error`
+  + `Exception`
+    + `RuntimeException`
+    + ...
+
+其中 `Error` 不算 exception（表示无法恢复的错误），而 `Exception` 则分为 checked / unchecked：
+
++ _Checked exception_
+  + `Exception` 的子类（但不是 `RuntimeException` 的子类）
+  + 要么需要 catch，要么需要在 method 中声明 `throws ...`
++ _Unchecked exception_
+  + `RuntimeException` 的子类
+
+Checked exception 似乎是 Java 的特色。C++ 中只有 unchecked exception。Java 的 checked exception 其实是一个很不错的设计，但是由于各种库的滥用，实际使用时非常糟糕：
+
++ throws 声明会不断向上传播
++ throws 声明也是方法签名（？）的一部分，override 的时候必须 throws 同样的异常
+  + TODO method signature
+
+参考：[Java设计出checked exception有必要吗？ - 知乎](https://www.zhihu.com/question/30428214)
 
 ### 函数式编程
 
@@ -36,22 +62,14 @@ TODO: JDK 动态代理 `java.lang.reflect.Proxy`；从 JVM 层面理解 JDK 动�
 
 ## 标准库
 
-### Collection
-
-TODO
-
-### IO
-
-TODO
-
-### Concurrent
-
-[Java Concurrent](concurrent.md)
++ [Collection](collection.md)
++ [I/O](io.md)
++ [Concurrency](concurrency.md)
 
 ## 模式与框架
 
-[依赖注入 (DI) / 控制反转 (IoC)](di-ioc.md) 与[面向切面编程 (AOP)](aop.md)
-
-### RxJava
-
-TODO [RxJava 从入门到放弃再到不离不弃](https://www.daidingkang.cc/2017/05/19/Rxjava/)
++ Spring
+  + [依赖注入 (DI) / 控制反转 (IoC)](di-ioc.md)
+  + [面向切面编程 (AOP)](aop.md)
++ RxJava
+  + TODO [RxJava 从入门到放弃再到不离不弃](https://www.daidingkang.cc/2017/05/19/Rxjava/)
