@@ -16,17 +16,23 @@ Java 集合框架 (_Java Collections Framework_, JCF) 始于 Java 1.2。
 
 ### List
 
+注意：`Vector` 类已经过时。
+
 ### Set
 
 ### Queue / Deque
 
+`Queue` 接口中的 `remove()` 与 `poll()`、`element()` 与 `peek()` 在队列为空的时候，一个抛出异常，一个返回 null。具体对比见 [BlockingQueue 文档](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/BlockingQueue.html) 中的表格。
+
+注意：`Stack` 类已经过时。现在使用 Deque 来完成栈的功能，有两个实现类：`ArrayDeque`（推荐）、`LinkedList`。
+
 ### Map
 
-AbstractCollection, AbstractSet, AbstractList, AbstractSequentialList and AbstractMap 提供了一些基本的实现。
+注意：`Hashtable` 类已经过时。
 
 ## 实现原理
 
-TODO: 几个关键类的源码剖析
+AbstractCollection, AbstractSet, AbstractList, AbstractSequentialList and AbstractMap 提供了一些基本的实现。
 
 接口与对应的实现：
 
@@ -41,47 +47,66 @@ TODO: 几个关键类的源码剖析
 
 ### 动态数组：`ArrayList`, `ArrayDeque`
 
-可增长的动态数组
+`ArrayList`：可增长的动态数组
 
-+ 支持随机访问，`get(i)` = O(1)
-+ 插入/删除需要拷贝数据
++ 用户可以在 constructor 中指定初始容量
++ 默认初始容量为 10，但初始化是空数组，添加第一个元素时数组容量才变为 10
++ 每次扩容时，至少扩容为旧容量的 1.5 倍（对比：`Vector` 扩容为旧容量的 2 倍）
++ 扩容时机：用户调用 `ensureCapacity()` 时；添加元素导致超出容量时
 
-### 链表：`LinkedList`
+`ArrayDeque`：可增长的循环数组
 
-双向链表
++ 循环数组
+  + `head` 指向第一个元素
+  + `tail` 指向最后一个元素的下一个位置
++ 容量扩展
+  + 默认初始容量为 16
+  + 每次扩容时，容量翻倍
+  + 先插入，再扩容（与 ArrayList 不同）
+  + 数组中至少有一个空位（不会出现 `tail == head`，此时会立刻扩容）
++ 循环下标
+  + 数组的大小永远是 2 的幂
+    + 取模运算转化为位运算
+  + 扩容之后，数组顺序捋正，head = 0, tail = n
 
-+ 不支持随机访问，`get(i)` = O(n)
-+ 插入/删除只需移动指针，不需要拷贝数据
+### 双向链表：`LinkedList`
 
-注意没有 `LinkedDeque` 类，只有 `LinkedList`。`LinkedList` 既实现了 `List` 接口，也实现了 `Deque` 接口。
+注意没有 <del>`LinkedDeque`</del> 类，只有 `LinkedList`。`LinkedList` 既实现了 `List` 接口，也实现了 `Deque` 接口。
 
 + Java 6 之前为双向循环链表
   + 使用一个 dummy entry，`header` 指向 dummy entry
   + 在尾部插入实际上就是在 `header` 的前面插入
 + Java 7 去掉了循环
   + 使用 `first`, `last` 分别指向链表头部和尾部
-
++ 查找一个结点时，会根据 index 的大小选择从头部或者尾部找起
 
 ### 散列表：`HashMap`
-
-散列表的实现原理：
 
 + 计算 hash
   + 调用 `key.hashCode()` 得到 hash code
   + 使用扰动函数处理 hash code，得到最终的 hash 值
-    + 扰动函数可以避免 `hashCode()` 方法实现得太差，导致太多 hash 冲突
+    + 综合 hash code 高位和低位的特征，并存放在低位
+    + 扰动函数可以避免 `hashCode()` 方法实现得太差，导致太多 hash 冲突（碰撞）
+    + Java 7 的扰动函数会扰动四次：`h ^= (h >>> 20) ^ (h >>> 12); return h ^ (h >>> 7) ^ (h >>> 4);`
+    + Java 8 的扰动函数较为简化：`h ^ (h >>> 16)`
 + 寻找 bucket
-  + Bucket 的数量设置为 2 的幂（默认初始值 16）
-    + 取模操作转化为位操作，计算方便
-  + 对比：`Hashtable` 的 bucket 数量为质数
+  + Bucket 的数量永远是 2 的幂（默认初始值 16）
+    + 取模运算转化为位运算
+    + 对比：`Hashtable` 的 bucket 数量为质数
 + 处理 hash 冲突
-  + Java 7 以前，直接使用（单？）链表
+  + Java 7 以前，直接使用单链表
   + Java 8 以后，当链表长度超过阈值 (8)，链表会转化成**红黑树**
-+ 扩容 (resize)
-  + 扩容阈值 threshold = bucket 数量 * load factor
-  + 当 size > threshold 时扩容
-  + Load factor 默认为 0.75
++ 重要参数
+  + 容量 _capacity_ —— bucket 的数量
+  + 负载因子 _load factor_
+    + 默认值 0.75
+  + threshold = capacity * load factor
+  + 当元素的数量大于 threshold 时，需要进行 _rehash_
++ 扩容 (resize, rehash)
   + Java 8 的新扰动函数，使得扩容时不需要重新计算 hash
+  + Java 7 中，在并发场景下扩容时，可能导致链表死循环（Java 8 修复？）
+
+参考：[HashMap 源码详细分析(JDK1.8)](http://www.tianxiaobo.com/2018/01/18/HashMap-%E6%BA%90%E7%A0%81%E8%AF%A6%E7%BB%86%E5%88%86%E6%9E%90-JDK1-8/) （这篇文章里将了很多有用的细节）
 
 ### 平衡树：`TreeMap`
 
@@ -91,10 +116,12 @@ TODO: 几个关键类的源码剖析
 
 ### 散列表 + 链表：`LinkedHashMap`
 
-`LinkedHashMap` 基于 `HashMap` 进行扩展，使用双向链表保持顺序性。可以选择两种排序方式：
+`LinkedHashMap` 在 `HashMap` 结构的基础上，增加了一条双向链表。
 
 + 根据写入顺序排序
 + 根据访问顺序排序
+
+维护访问顺序时，是每次调用 get, getOrDefault, replace 等方法时，将这些方法访问的结果移动到链表的尾部。
 
 ### 其他
 
@@ -110,7 +137,7 @@ TODO: `Vector`, `Stack`, `Hashtable`, `Enumeration`
 
 如果一边操作集合的迭代器，另一边在修改集合，这时候迭代器的行为是不确定的，可能产生 undefined 的结果。一些迭代器在运行时会进行检查，如果发现集合被修改，会抛出 `ConcurrentModificationException`。这种迭代器称为 _fail-fast iterator_。
 
-`AbstractList` 中定义了 `modCount` 变量，表示 list 被修改的次数。`iterator()` 或 `listIterator()` 返回的迭代器中，每次调用 `previous()`, `next()`, `add()`, `set()`, `remove()` 时都会检查这个变量。如果它发生了预料之外的变化，则迭代器抛出 `ConcurrentModificationException`。注意，迭代器的 `remove()` 等方法会造成 `modCount` 改变，但这是预料之中的变化。
+`AbstractList` 中定义了 `modCount` 变量，表示 list 被修改的次数。`iterator()` 或 `listIterator()` 返回的迭代器中，每次调用 `previous()`, `next()`, `add()`, `set()`, `remove()` 时都会检查这个变量。如果它发生了预料之外的变化（即 `modCount != expectedModCount`），则迭代器抛出 `ConcurrentModificationException`。注意，迭代器的 `remove()` 等方法会造成 `modCount` 改变，但这是预料之中的变化（同时也会修改 `expectedModCount`）。
 
 + 无论是多线程环境还是单线程环境，都可能出现 concurrent modification
 + 迭代器与 for-each 循环等价，因此在 for-each 循环中修改集合也会出现 concurrent modification
