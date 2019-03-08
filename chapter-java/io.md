@@ -134,6 +134,8 @@ Buffer 的模型：position, limit, 和 capacity。
 
 TODO：内存映射文件
 
++ [Java NIO分析(11): 零拷贝技术以及NIO的支持](http://sound2gd.wang/2018/07/24/Java-NIO%E5%88%86%E6%9E%90-11-%E9%9B%B6%E6%8B%B7%E8%B4%9D%E6%8A%80%E6%9C%AF/)
+
 ## AIO
 
 ## BIO vs. NIO

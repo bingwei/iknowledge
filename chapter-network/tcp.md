@@ -2,6 +2,8 @@
 
 TCP 协议面向数据流 (_data stream_)，将数据分块，加上 TCP header 成为一个 TCP 包 (_segment_)。
 
+TCP 是面向流的连接，“粘包”似乎是个伪概念。
+
 + _MTU (maximum transmission unit)_ 最大传输单元
   + 以太网，MTU = 1500
 + _MSS (maximum segment size)_ 最大分段大小
