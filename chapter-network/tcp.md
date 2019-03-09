@@ -75,6 +75,10 @@ TCP 所谓的“连接”，实际上是通讯的双方维护一个**连接状�
 
 ![TCP state machine](img/tcp-state-machine.png)
 
+![TCP state diagram](img/tcp-state-transition.jpg)
+
+（图片来自 _Unix Network Programming, Volumn I_, Section 2.6, Figure 2.4）
+
 + SYN-SENT
   + 已经发送了 SYN
   + 等待对方也发送 SYN 和回复 ACK
