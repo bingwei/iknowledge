@@ -2,15 +2,19 @@
 
 ## 概念
 
-### 互斥锁 (Mutex)
+### 互斥锁 (Mutex) 与读写锁 (Reader-writer lock)
 
-Mutex 即 _mutural exclusion lock_。只有一个线程可以拥有这个锁。
+Mutex 即 _mutural exclusion lock_。只有一个线程可以拥有这个锁。`synchronized` 和 `ReentrantLock` 都是互斥锁。
+
+读写锁不是互斥的，只有一个线程可以写，但是可以有多个线程同时读。
 
 ### 可重入锁 (Reentrant lock)
 
 当一个线程请求一个它已经拥有的锁时，请求会成功。这样的锁叫做可重入锁。可重入锁意味着锁是每个线程分配一个，而不是每次调用分配一个。每个锁会有一个 count，每次 lock / unlock 时 +1 / -1。当 count 为零时锁会被释放。
 
 `synchronized` 关键字和 `ReentrantLock` 都是可重入锁。如果 `synchronized` 没有可重入性，当子类重写了父类的一个 synchronized method 话，会导致 deadlock。
+
+Unix 系统中称这种锁为 recursive mutex，可以在创建 mutex 的时候指定 `PTHREAD_MUTEX_RECURSIVE` 参数。
 
 参考：_Java Concurrency in Practice_ 2.3.2
 
@@ -47,6 +51,8 @@ Mutex 即 _mutural exclusion lock_。只有一个线程可以拥有这个锁。
 + 缺点
   + 若线程在临界区时间过长，其他线程会持续忙等待，消耗大量 CPU
   + 不公平，可能导致 starvation
+
+自旋锁在**非抢占式调度**系统中比较有用。对于一般的抢占式调度，即使线程进行自旋，当时间片到了，内核依然可以中断其运行，进行调度。
 
 ## 锁的两个关键作用
 

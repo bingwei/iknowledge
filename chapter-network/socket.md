@@ -46,10 +46,22 @@ Kernel 会维护两个队列：
 + 用 `accept()` 阻塞等待
 + 用 `select()` / `poll()` / `epoll()` 多路等待
 
+### 读写数据
+
+直接在 connected socket fd 上调用 `read()` 和 `write()` 即可。
+
+也可以用 `send` / `recv`，类似 `write` / `read`，但多了一个 flags 参数。当 flag 为 0 的时候， `send` / `recv` 等价于 `write` / `read`。
+
 ### 断开连接
 
+Client 调用 `close()` 关闭 connected socket，或者在 `exit()` 的时候自动关闭打开的 fd。Client 的 socket 关闭时，会发送 FIN。
+
+Client 发来的 FIN 会使得 server 的 `read()` 返回 0（即 EOF，读到 0 个字节）。
+
+关闭 socket 还可以用 `shutdown()`，只关闭一半连接（双工连接变成单工）。
+
 + `close()` 同时关闭读写（第一、三次挥手）
-+ `shutdown()` 可以只关闭写，继续读（第三次挥手）
++ `shutdown()` 可以只关闭写，继续读（第三次挥手)
 
 ![Shutdown](img/shutdown.png)
 
