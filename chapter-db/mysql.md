@@ -1,11 +1,4 @@
-# MySQL 
-
-## InnoDB
-
-参考：
-
-+ [MySQL documentation - Chapter 14 The InnoDB Storage Engine](https://dev.mysql.com/doc/refman/5.5/en/innodb-storage-engine.html)
-+ [『浅入浅出』MySQL 和 InnoDB](https://draveness.me/mysql-innodb)
+# MySQL
 
 ## 基本使用
 
