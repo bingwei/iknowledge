@@ -120,6 +120,16 @@ SQL 语句分类
 + Durability 持久性
   + 事务一旦成功完成，它对数据库的改变必须是永久的，即便是在系统遇到故障的情况下也不会丢失
 
+实现方式：
+
++ 隔离性 —— 由**并发控制机制**（一般是锁）实现
++ 原子性、持久性 —— 由 **REDO 日志**实现
++ 一致性 —— 由 **UNDO 日志**实现
+
+### 锁
+
+每个存储引擎实现锁的方式都不同，见 InnoDB。
+
 ### 隔离性
 
 + 未提交读 read uncommitted
@@ -133,6 +143,7 @@ SQL 语句分类
   + 不可重复读 non-repeatable reads
 + 可重复读 repeatable read
   + InnoDB 默认隔离级别
+  + > if you issue several plain (nonlocking) SELECT statements within the same transaction, these SELECT statements are consistent also with respect to each other. 在同一个事务中，多个 SELECT 查询的结果应当是一致的
   + 只允许读已提交数据，而且在一个事务两次读取一个数据项期间，其他事务不得更新该数据
 + 序列化读 serializable
   + 最高级别，保证事务之间如同不会交叉一样，每个事务都可以认为只有它自己在操作数据库
@@ -155,10 +166,10 @@ SQL 语句分类
   + 如果出现脏读，一个事务可能读到另外一个事务中未提交的数据
   + Read uncommitted 隔离级别才会出现脏读
 + 不可重复读 non-repeatable reads
-  + MySQL 文档中称为 Phantom Problem（幻象问题）
   + 一个事务中两次读到的数据不一样，因为在过程中另外一个事务对数据进行了修改而且提交
   + 和脏读的区别是读到的是已提交的事务
 + 幻读
+  + > The so-called phantom problem occurs within a transaction when the same query produces different sets of rows at different times. For example, if a SELECT is executed twice, but returns a row the second time that was not returned the first time, the row is a “phantom” row. 幻读是指在一个事务中，同一个查询会在不同时候返回不同的行数，那些多出的行就好像是出现了“幻象”。
   + 注意和不可重复读区分开，比较难
 
 参考：

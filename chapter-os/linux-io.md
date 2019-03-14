@@ -81,4 +81,23 @@ send / recv 见 APUE 第 16 章。
 
 ### 多路复用 I/O
 
-TODO select, poll, epoll
++ select
+  + 限制 descriptor 的数量为 1024 个
+  + 参数是 in-out 的，每次调用都需要重新设置参数
+  + 集合用数组表示，需要遍历
++ poll
+  + 不限制 descriptor 的数量
+  + 但仍需要线性遍历
++ epoll
+  + 不需要线性遍历
+  + 因此能处理更多的事件，性能更好
+
+epoll 有多个 API
+
++ `epoll_create`
+  + 打开一个 epoll file descriptor
++ `epoll_ctl`
+  + 添加或删除监听事件
++ `epoll_wait`
+  + 等待监听的事件
+  + 返回 events

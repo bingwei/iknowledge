@@ -7,6 +7,7 @@
 + InnoDB 是聚集索引，数据和索引放在一起，必须要有主键，辅助索引需要先查询到主键，再通过主键查询到数据。而 MyISAM 是非聚集索引，数据和索引分离，索引保存的是数据文件的指针。
 + InnoDB 不保存表的具体行数，执行 `select count(*) from table` 时需要全表扫描。而 MyISAM 用一个变量保存了整个表的行数，执行上述语句时只需要读出该变量即可，速度很快
 + MyISAM 更适合读操作很多的情况，而 InnoDB 适合读写操作都很多的情况
++ MyISAM 的锁是表锁，而 InnoDB 支持行级锁
 
 ## InnoDB 数据存储方式
 
@@ -33,6 +34,14 @@ Compact 是基础，其他的几个格式都是和 compact 相比稍微有点变
 + Compact 或者 Redundant 格式 —— 前 768 个字节存储在行记录中，后面会通过偏移量指向溢出页
 + Compressed 或者 Dynamic 格式 —— 行记录中只存储 20 个字节的指针，全部数据都放在溢出页中
 
+### 表空间
+
++ 段 segment 是逻辑概念
+  + Leaf 段，non-leaf 段
++ 区 extent 是物理概念
+  + 碎片区（直属表空间）
+  + 属于段的区
+
 ### On-Disk Structures
 
 InnoDB 的 index page 默认大小是 16KB。
@@ -42,6 +51,34 @@ InnoDB 的 index page 默认大小是 16KB。
 参考：
 
 + [『浅入浅出』MySQL 和 InnoDB](https://draveness.me/mysql-innodb)
+
+## 锁
+
+两种行级锁：
+
++ 共享锁，读锁 (S)
++ 排他锁，写锁 (X)
+
+两种意向锁 (intention lock)，是表级别的：
+
++ 意向共享锁 (IS)
+  + `SELECT ... LOCK IN SHARE MODE` 会设置该锁
++ 意向排他锁 (IX)
+  + `SELECT ... FOR UPDATE` 会设置该锁
+
+锁的兼容性：
+
++ IS 与 IS，IX，S 兼容
++ IX 与 IS，IX 兼容
++ S 与 IS，S 兼容
+
+### Next-key lock
+
+InnoDB 默认工作在 repeatable read 级别下，会使用 next-key locks 来防止幻读问题。
+
+### 多版本并发控制 Multi Version Concurrency Control (MVCC)
+
+
 
 ## InnoDB 特色
 
