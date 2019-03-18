@@ -178,14 +178,6 @@ PATCH 方法不一定是幂等的，由于是部分修改资源，可能第一�
   + 如果文件未被修改，则服务器返回 304 Not Modified
   + 如果文件被修改了，服务器返回新的文件
 
-## HTTPS
-
-HTTPS 实际上就是 HTTP + SSL/TLS。即先用 SSL 或 TLS 对 HTTP 报文进行加密，再作为 TCP 数据进行传输。从网络的层级结构来看，SSL/TLS 位于 TCP 之上，HTTP 之下。
-
-HTTPS 在传输数据之前需要客户端与服务器进行一个握手 (TLS/SSL 握手)，在握手过程中将确立双方加密传输数据的密码信息。
-
-参考：[图解 SSL/TLS 协议](http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html)
-
 ## HTTP 长连接 (keep-alive)
 
 _HTTP 持续连接 (HTTP persistent connection, HTTP keep-alive, HTTP connection reuse)_ 是指使用同一个 TCP 连接来发送和接收多个 HTTP 请求/应答，而不是每个 HTTP 请求/应答 就打开一个新的连接。
@@ -193,6 +185,44 @@ _HTTP 持续连接 (HTTP persistent connection, HTTP keep-alive, HTTP connection
 HTTP/1.0 中没有内置的 keep-alive 的支持。需要使用 header field: `Connection: Keep-Alive`，在请求和响应中均添加该 header field。
 
 在 HTTP 1.1 中，所有的连接默认都是持续连接，除非显示声明关闭。
+
+## HTTPS
+
+HTTPS 实际上就是 HTTP + SSL/TLS。即先用 SSL 或 TLS 对 HTTP 报文进行加密，再作为 TCP 数据进行传输。从网络的层级结构来看，SSL/TLS 位于 TCP 之上，HTTP 之下。
+
+HTTP 明文传播的三大风险，以及 SSL/TLS 的解决办法：
+
++ 窃听风险（eavesdropping）：第三方可以获知通信内容
+  + 将信息**加密传播**
++ 篡改风险（tampering）：第三方可以修改通信内容
+  + 具有**校验机制**，一旦被篡改，通信双方会立刻发现
++ 冒充风险（pretending）：第三方可以冒充他人身份参与通信
+  + 配备**身份证书**，防止身份被冒充
+
+HTTPS 在传输数据之前需要客户端与服务器进行一个握手 (TLS/SSL 握手)，在握手过程中将确立双方加密传输数据的密码信息。SSL/TLS 协议的基本过程：
+
++ 客户端向服务器端索要并验证公钥 (_public key_)（两次握手）
+  + 协商使用的加密通信协议版本
+  + 服务器返回证书 (_certificate_)，客户端验证
++ 双方协商生成"对话密钥"（两次握手）
+  + 编码改变通知，表示随后的信息都将用双方商定的加密方法和密钥发送
++ 双方使用**对话密钥** (_session key_) 进行加密通信
+
+握手阶段的注意点：
+
++ 生成对话密钥一共需要三个随机数
+  + Client random（第一次握手）
+  + Server random（第二次握手）
+  + 使用公钥加密后的 premaster secret（第三次握手）
++ 握手之后的对话使用 session key 加密（对称加密），服务器的公钥和私钥只用于加密和解密 session key（非对称加密），无其他作用
++ 服务器公钥放在服务器的数字证书之中
+
+![SSL handshakes](img/ssl-handshake.png)
+
+参考：
+
++ [SSL/TLS协议运行机制的概述](http://www.ruanyifeng.com/blog/2014/02/ssl_tls.html)
++ [图解 SSL/TLS 协议](http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html)
 
 ## Stateful web service
 
