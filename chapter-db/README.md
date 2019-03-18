@@ -16,31 +16,9 @@
 
 “关系模式”和“关系”的区别，类似于面向对象程序设计中”类“与”对象“的区别。”关系“是”关系模式“的一个实例，你可以把”关系”理解为一张带数据的表，而“关系模式”是这张数据表的表结构。
 
-## SQL 运算过程
+## SQL
 
-可以将 SQL 的计算过程类比函数式编程
-
-+ [FROM] 对 relation 做笛卡尔积运算，类比数据源
-  + 逗号 —— 笛卡尔积运算
-  + natural join —— 自然连接运算
-  + join .. using —— 自定义连接运算
-+ [WHERE] 选择行，类比 filter
-+ [GROUP BY] 分组，类比？？
-+ [HAVING] 选择组，类比 filter
-+ [SELECT] 选择列，类比 map（普通 SELECT）和 reduce（聚集函数）
-+ [DISTINCT] 去重
-+ [ORDER BY] 排序
-+ [LIMIT] 截取
-
-参考：
-
-+ [Microsoft 文档 - Logical Processing Order of the SELECT statement](https://docs.microsoft.com/en-us/sql/t-sql/queries/select-transact-sql?view=sql-server-2017#logical-processing-order-of-the-select-statement)
-
-从这个计算的过程能看出来变量的作用域。
-
-FROM 子句中的子查询相当于链式函数式编程。
-
-SQL 语句分类
+### SQL 语句分类
 
 + _Data definition language_ (DDL)
   + Schema 相关？
@@ -54,6 +32,55 @@ SQL 语句分类
 + _Data query language_ (DQL)
   + 查询（读）数据库实例
   + SELECT
+
+### JOIN
+
++ INNER JOIN = JOIN
++ LEFT JOIN = LEFT OUTER JOIN
++ RIGHT JOIN = RIGHT OUTER JOIN
++ FULL JOIN = FULL OUTER JOIN
+
+![SQL joins](img/sql-joins.png)
+
+无论何种 join，一定要加一个 `ON A.key = B.key`
+
+参考：
+
++ [Join (SQL) - Wikipedia](https://en.wikipedia.org/wiki/Join_(SQL))
++ [图解SQL的JOIN - CoolShell](https://coolshell.cn/articles/3463.html)
+
+## SQL 运算过程
+
+可以将 SQL 的计算过程类比函数式编程
+
++ [FROM] 对 relation 做笛卡尔积运算，类比数据源
+  + 逗号（相当于 CROSS JOIN） —— 笛卡尔积运算
+  + JOIN —— 连接运算
+  + ON —— 选择行
++ [WHERE] 选择行，类比 filter
++ [GROUP BY] 分组，类比？？
++ [HAVING] 选择组，类比 filter
++ [SELECT] 选择列，类比 map（普通 SELECT）和 reduce（聚集函数）
++ [DISTINCT] 去重
++ [ORDER BY] 排序
++ [LIMIT] 截取
+
+### JOIN
+
+数据库的实现一般不会直接做笛卡尔积，因为太慢。两种常见的实现方式：
+
++ [Hash join](https://en.wikipedia.org/wiki/Hash_join)
+  + 只能用于比较 `=` 的 join
++ [Sort-merge join](https://en.wikipedia.org/wiki/Sort-merge_join)
+  + 根据 join 的属性排序，参考 external sort
+
+参考：
+
++ [Microsoft 文档 - Logical Processing Order of the SELECT statement](https://docs.microsoft.com/en-us/sql/t-sql/queries/select-transact-sql?view=sql-server-2017#logical-processing-order-of-the-select-statement)
+
+从这个计算的过程能看出来变量的作用域。
+
+FROM 子句中的子查询相当于链式函数式编程。
 
 ## 范式 Normal form
 
