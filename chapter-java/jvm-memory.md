@@ -173,6 +173,8 @@ TODO
 
 ![Mark word in Java object header](jvm/object-header-mark-word.png)
 
+参考：[聊聊Java对象在内存中的大小](https://segmentfault.com/a/1190000012354736)
+
 ### 对象的创建过程
 
 对象的创建过程在字节码层面，需要先使用 `new` 指令创建内存空间，再调用 `<init>` 方法。`new` 执行分为四步创建对象：
