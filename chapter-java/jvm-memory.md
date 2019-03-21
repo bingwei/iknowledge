@@ -90,27 +90,25 @@ Java 8 开始废除永久代，改为 _Metaspace_（元空间）。永久代使�
 + `-XX:MaxPermSize` —— （Java 7 以前）永久代的大小上限
 + `-XX:MetaspaceSize` —— （Java 8 以后）元空间的大小
 
-### 判断已死亡对象
-
-+ 引用计数法
-  + 实现简单
-  + 判定效率高
-  + 很难解决循环引用的问题
-+ 可达性分析法
-  + 以 _GC roots_ 作为起始点
-  + 不可达的对象则已死亡
-
 ### 垃圾回收策略
 
 + 新的对象创建在新生代
-+ _Minor garbage collection_ 会在新生代进行
-+ _Major (full) garbage collection_ 会将仍存活的新生代对象移动至老年代
-  + 一般会使应用程序的线程暂停
+  + 但是大对象会直接创建在老年代
 + 老年代和永久代其中任何一个满了，两个都会进行垃圾回收
+
+#### Minor GC 与 Major GC (Full GC)
+
++ _Minor garbage collection_
+  + 在新生代进行
+  + 非常频繁
+  + 速度较快
++ _Major (full) garbage collection_
+  + 将仍存活的新生代对象移动至老年代
+  + 一般比 Minor GC 慢 10 倍以上
 
 ### 垃圾回收算法
 
-根据三代的不同特点，使用不同的垃圾回收算法。
+根据不同代的特点，使用不同的垃圾回收算法。
 
 + 新生代 —— 对象存活率较低 —— 使用**复制算法**
 + 老年代 —— 对象存活率较高 —— 使用**标记-清理算法**、**标记-整理算法**
@@ -123,28 +121,108 @@ Java 8 开始废除永久代，改为 _Metaspace_（元空间）。永久代使�
 + 每次使用 eden 和其中一个 survivor。垃圾回收时，将存活对象复制到另一个 survivor 中
 + 如果存活对象多于 10%，需要进行 _handle promotion_（分配担保）
 
-#### Mark-sweep 标记-清理算法
+老年代对象因为存活率较高，不适合用复制算法。一是因为复制操作会有很多；二是因为需要只要 50% 的空闲空间保证放得下所有的对象。
+
+#### Mark-sweep 标记-清除算法
 
 + 工作方式
   + 标记阶段：标记出需要回收的对象
   + 清理阶段：回收被标记的对象
-+ 标记和清理的效率都不太高
-+ 会产生大量不连续的内存碎片
-  + 大对象可能无法分配空间，还需要额外 GC
++ 缺点
+  + 标记和清理的效率都不太高
+  + 会产生大量不连续的内存碎片
+    + 大对象可能无法分配空间，还需要额外 GC
 
 #### Mark-compact 标记-整理算法
 
 + 工作方式
   + 标记阶段：与“标记-清理算法”相同
-  + 整理阶段：将所有存活的对象移动到一边，然后直接清理到边界以外的内存
+  + 整理阶段：将所有存活的对象移动到一边，然后直接清理到边界以外的内存（_pointer bumping_）
++ 缺点
+  + 需要拷贝对象以及更新引用，GC 暂停的时间会更长
+
+### 标记垃圾对象
+
+实际上就是标记-清理算法中的“标记”阶段。
+
++ 引用计数法
+  + 实现简单
+  + 判定效率高
+  + 很难解决循环引用的问题
++ 可达性分析法
+  + 以 _GC roots_ 作为起始点
+  + 不可达的对象则已死亡
+
+Q：Java 有了 GC，一定不会内存泄漏吗？
+A：引用计数法出现循环引用时，可能会出现内存泄漏。但是现在的 GC 一般都不使用引用计数方法了。
 
 ### 垃圾回收器
 
-TODO
+| 垃圾回收器 | 代 | 回收算法 |
+| :-: | :-: | :-: |
+| Serial | 新生代 | 复制 |
+| ParNew | 新生代 | 复制 |
+| ParallelScavenge | 新生代 | 复制 |
+| SerialOld | 老年代 | 标记-整理 |
+| ParallelOld | 老年代 | 标记-整理 |
+| CMS | 老年代 | 标记-清除 |
+| G1 | 新生代&老年代 | （特殊）|
+
+#### Stop the world
+
+很多垃圾回收器在工作的时候，必须**暂停所有用户线程**，这称为 _stop the world_。
+
+有些垃圾回收器的部分工作不需要 stop the world，如 CMS。这种情况称为**并发的 (concurrent)**，即 GC 线程和用户线程并发。
+
+注意与 ParNew 等中的**并行 (parallel)** 区分。并行只是使用了多个 GC 线程，利用多核加速。
+
+#### Parallel Scavenge
+
+关注点与其他垃圾回收器不同：
+
++ 其他垃圾回收器以缩短**停顿时间**为目标
+  + 适用于前台交互的应用
++ Parallel Scavenge 以**吞吐量 (throughput)** 为目标
+  + 即减少垃圾回收时间所占的总体比例，而不是纠结于某一次垃圾回收的时间
+  + 适用于后台计算的应用
+
+#### CMS (Concurrent Mark Sweep)
+
+四个阶段（三标记一清除）：
+
++ 初始标记 initial mark —— stop the world
+  + 仅标记一下 GC roots 能直接关联到的对象
+  + 速度很快
++ 并发标记 concurrent mark —— concurrent
+  + 进行 GC roots tracing
+  + 耗时较长
++ 重新标记 remark —— stop the world
+  + 修正并发标记期间用户应用改变的对象
+  + 停顿时间比初始标记稍长，但远比并发标记短
+  + 采用多线程并行执行来提升效率
++ 并发清除 concurrent sweep —— concurrent
+
+缺点：
+
++ 虽然并发执行，但会占用一部分 CPU 资源，导致应用程序变慢
++ 可能出现 _Concurrent Mode Failure_，需要后备垃圾回收器 SerialOld
+  + 并发清除需要预留一部分老年代空间，如果空间不够则会出错
++ 标记-清除而不是标记-整理，会产生内存碎片
+
+#### 配置与组合
+
++ `-XX:+UseSerialGC`
++ `-XX:+UseParallelGC`
++ `-XX:+UseConcMarkSweepGC`
++ `-XX:+UseG1GC`
 
 ![JVM garbage collector pairs](jvm/jvm-garbage-collector-pair.png)
 
-一文学习：[Java虚拟机垃圾回收(三) 7种垃圾收集器：主要特点 应用场景 设置参数 基本运行原理](https://blog.csdn.net/tjiyu/article/details/53983650)
++ 有连线的表明可以搭配使用
++ CMS 只能和 Serial 或 ParNew 算法配合，而不能和 Parallel Scavenge 算法配合
++ SerialOld 是作为 CMS 失败时候的后备方案
+
+参考：《深入理解 Java 虚拟机》3.5 章
 
 ### 关于永久代
 
