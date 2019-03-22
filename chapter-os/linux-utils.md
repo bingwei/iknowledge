@@ -24,6 +24,12 @@
 + `df -ih` 查看 inode 使用情况（默认是显示 block 使用情况）
 + `du -sh <dir>` 查看目录大小
 
+### 文件 I/O
+
++ [sync (Unix)][sync_unix]
+
+[sync_unix]: https://en.wikipedia.org/wiki/Sync_(Unix)
+
 ### 操作系统
 
 + `uname -s` 查看内核名称
@@ -84,3 +90,8 @@ ps 有两种格式，UNIX 的和 BSD 的。`ps -ef` 是 UNIX 格式的；`ps aux
 + `-t` TCP 协议
 + `-u` UDP 协议
 + `-p` 显示 PID 和程序名
+
+### dig
+
++ `dig www.example.com` 显示 DNS 查询过程
++ `dig @8.8.8.8 www.example.com` 显示指定 DNS 服务器的查询过程

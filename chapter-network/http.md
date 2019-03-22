@@ -72,7 +72,7 @@ PATCH 方法不一定是幂等的，由于是部分修改资源，可能第一�
   + 302 Found (Moved Temporarily) —— 需要客户端进行重定向
     + 在 body 中告知新的地址
     + 客户端以后仍应在原地址下载
-  + 304 Not Modified —— 客户端人可以使用之前缓存的内容
+  + 304 Not Modified —— 客户端可以使用之前缓存的内容
     + 需要 header 中 `If-Modified-Since` 或 `If-None-Match`
 + 4xx —— 客户端错误状态码
   + 400 Bad Request —— 明显的客户端错误
@@ -93,7 +93,7 @@ PATCH 方法不一定是幂等的，由于是部分修改资源，可能第一�
 
 + Forward (转发): 服务器行为，服务器获取跳转页面内容传给用户，用户地址栏不变
 + Redirect (重定向): 客户端行为，本质上为两次请求，地址栏改变，前一次请求对象消失
-  + HTTP 301
+  + HTTP 301/302
 
 ## HTTP header fields
 

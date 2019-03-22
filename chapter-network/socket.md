@@ -50,9 +50,6 @@ Kernel 会维护两个队列：
 
 每次调用 `accept()`，会从 completed connection queue 中取出一项。如果队列为空，则进程阻塞。`accept` 返回的是一个全新的 fd（指向 TCP 连接，称为 _connected socket_），和 sockfd（称为 _listening socket_）不同。
 
-### 非阻塞 accept
-
-
 ### 建立连接 - 客户端
 
 + 调用 `connect()`
@@ -97,7 +94,9 @@ fcntl(sockfd, F_SETFL, flags | O_NONBLOCK);
   + 浏览器打开多个标签页时很有用
 + 在使用 select 的时候设置 timeout，可以缩短 connect 的 timeout 设置
 
-非阻塞 connect 参考 _Unix Network Programming, Volumn I_, Section 16.3
+参考：
+
++ _Unix Network Programming, Volumn I_, Section 16.3
 
 ## 读写数据
 

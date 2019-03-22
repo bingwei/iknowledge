@@ -32,8 +32,7 @@ fork 是将进程复制了一份。_The child process is an exact duplicate of t
   + 参考 _The Linux Programming Interface_ Figure 24-2
 
 Linux 3.2 提供了 clone 系统调用，可以控制哪些部分由父子进程共享。库函数 `fork()` 和 `clone()` 都调用了系统调用 `clone`。参考 [clone 的 man page](http://man7.org/linux/man-pages/man2/clone.2.html)，其中的 `flags` 部分是可以设置为**共享**的，而 `fork()` 这些都不共享，而是**复制**。
-
-（[Is it true that fork() calls clone() internally?](https://stackoverflow.com/questions/18904292/is-it-true-that-fork-calls-clone-internally)）
+（参考：[Is it true that fork() calls clone() internally?](https://stackoverflow.com/questions/18904292/is-it-true-that-fork-calls-clone-internally)）
 
 ### 孤儿进程与僵尸进程
 
@@ -41,15 +40,20 @@ Linux 3.2 提供了 clone 系统调用，可以控制哪些部分由父子进程
 
 僵尸进程：如果子进程先结束，而且父进程没有调用 `wait` 获取子进程状态，子进程变为僵尸进程。
 
+每个进程结束退出的时候，虽然大部分资源会回收，但进程号、退出状态、运行时间等信息还会保留，等待父进程调用 `wait` / `waitpid` 之后才会释放。
+
 子进程结束时，父进程会收到 SIGCHLD 信号。父进程可以在收到 SIGCHLD 信号的时候调用 `wait` 清理子进程。
 
 出现僵尸进程是父进程的责任。可以将父进程 kill，让僵尸子进程由 init 托管，而 init 会负责处理僵尸进程。
 
-参考 _The Linux Programming Interface_ Section 26.2
+参考：
 
++ _The Linux Programming Interface_, Section 26.2
 + [孤儿进程与僵尸进程[总结]](https://www.cnblogs.com/Anker/p/3271773.html)
 
 ## 进程间通信 IPC
+
+通信方式：
 
 + 通过打开的文件
   + fork 之后父子进程共享打开的文件

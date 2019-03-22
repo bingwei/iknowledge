@@ -33,7 +33,7 @@
 
 ## Socket 编程
 
-send / recv 见 APUE 第 16 章。
+见 [Socket 网络编程](../chapter-network/socket.md) 章节。
 
 ## Linux 的 IO 模型
 
