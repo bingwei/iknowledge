@@ -1,14 +1,6 @@
-# 数据库 - 实现
+# 数据库 - 索引 Index
 
-## 索引 Index
-
-### 基本知识
-
-建立索引：
-
-```SQL
-CREATE INDEX index_name ON table_name (column_name);
-```
+## 概念
 
 ### 聚集索引与非聚集索引
 
@@ -16,22 +8,13 @@ CREATE INDEX index_name ON table_name (column_name);
   + 索引的顺序定义了表中的物理存储顺序
 + 非聚集索引 nonclustering index，辅助索引 secondary index
 
-InnoDB 是聚集索引，数据存在 B+ 树的叶结点，索引存在 B+ 树的非叶结点。
+## 使用方法
 
-InnoDB 选择聚集索引的顺序：
+### 建立索引
 
-+ 如果有主键，那么主键作为聚集索引
-+ 如果没有主键，第一个**唯一 (unique) 非空 (not null) 索引**作为聚集索引
-+ 如果没有唯一非空索引，那么 InnoDB 自动生成一个隐藏的主键（6字节，自增）作为聚集索引
-
-InnoDB 中，辅助索引存储的是主键（聚集索引）的值，并不存储记录的物理地址。
-
-聚集索引的优点：
-
-+ 范围查找快速
-+ 已经是排好序的
-
-聚集索引的主要缺点是插入的开销很大。
+```SQL
+CREATE INDEX index_name ON table_name (column_name);
+```
 
 ### 全文索引 Full-text index
 
@@ -78,3 +61,28 @@ SELECT * FROM table_name WHERE MATCH(column_name) AGAINST('聪')
   + 经常更新的列
 
 继续阅读：[8.3 Optimization and Indexes](https://dev.mysql.com/doc/refman/5.6/en/optimization-indexes.html)
+
+## 索引的实现
+
+### B+ 树
+
+TODO
+
+### InnoDB 的索引实现
+
+InnoDB 是聚集索引，数据存在 B+ 树的叶结点，索引存在 B+ 树的非叶结点。
+
+InnoDB 选择聚集索引的顺序：
+
++ 如果有主键，那么主键作为聚集索引
++ 如果没有主键，第一个**唯一 (unique) 非空 (not null) 索引**作为聚集索引
++ 如果没有唯一非空索引，那么 InnoDB 自动生成一个隐藏的主键（6字节，自增）作为聚集索引
+
+InnoDB 中，辅助索引存储的是主键（聚集索引）的值，并不存储记录的物理地址。
+
+聚集索引的优点：
+
++ 范围查找快速
++ 已经是排好序的
+
+聚集索引的主要缺点是插入的开销很大。

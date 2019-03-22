@@ -52,7 +52,7 @@ InnoDB 的 index page 默认大小是 16KB。
 
 + [『浅入浅出』MySQL 和 InnoDB](https://draveness.me/mysql-innodb)
 
-## 锁
+## 并发控制 - 锁
 
 两种行级锁：
 
@@ -78,7 +78,7 @@ InnoDB 默认工作在 repeatable read 级别下，会使用 next-key locks 来�
 
 ### 多版本并发控制 Multi Version Concurrency Control (MVCC)
 
-
+TODO
 
 ## InnoDB 特色
 
