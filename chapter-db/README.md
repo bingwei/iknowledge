@@ -7,3 +7,8 @@
 + [InnoDB 存储引擎](innodb.md)
 
 拓展话题 —— [NoSQL](nosql.md)
+
+## 参考资料
+
++ [MySQL Internals Manual](https://dev.mysql.com/doc/internals/en/)
++ [MySQL 5.7 Reference Manual  /  The InnoDB Storage Engine](https://dev.mysql.com/doc/refman/5.7/en/innodb-storage-engine.html)
