@@ -43,11 +43,20 @@ Java 中的每个 `Thread` 都对应于操作系统的一个线程。线程创�
 
 注意：**在《阿里巴巴 Java 开发手册》“并发处理” 这一章节，明确指出线程资源必须通过线程池提供，不允许在应用中自行显示创建线程。**
 
+### 线程池的基本概念
 
+主要就两个结构：
 
-### 创建线程池
++ Work queue：任务队列
++ Pool：线程池
 
-标准库中内置的几种线程池（调用 `Executors` 中的静态工厂生成）：
+提交一个任务之后，这个任务要么直接交给一个线程来运行，要么进入任务队列中等待。如果任务队列已满，则拒绝 (reject) 该任务。
+
+任务运行在线程中。新添加的任务会放在任务队列中，任务队列可以决定任务运行的顺序（FIFO，LIFO，或是基于优先级）。任务从任务队列中取出，放在一个线程中执行。
+
+## 创建线程池
+
+最简单的方法是使用标准库中内置的几种线程池（调用 `Executors` 中的静态工厂生成）：
 
 + Fixed thread pool
   + 固定数量的线程
@@ -66,32 +75,7 @@ Java 中的每个 `Thread` 都对应于操作系统的一个线程。线程创�
 
 此外，还可以直接调用 `ThreadPoolExecutor` 的 constructor 来创建线程池。
 
-### 线程池的生命周期
-
-+ Shundown
-  + `shutdown()`
-  + `awaitTermination()`
-  + `shutdownNow()`
-+ Test
-  + `isShutdown()`
-  + `isTerminated()`
-
-### CompletionService
-
-`CompletionService` 包装了 `ExecutorService`，增强了其功能。它维护一个 `Future` 对象的 blocking queue，称为 completion queue。当一个 future 中的任务完成之后，会放入 completion queue。这样调用 `CompletionService.take()` 取出 future 的时候，就不用再等待 future 了。（相当于一个 future 的多路选择？）
-
-## 线程池的执行策略
-
-### 线程池的内部结构
-
-主要就两个结构：
-
-+ 任务队列 work queue
-+ Pool：线程池
-
-提交一个任务之后，这个任务要么直接交给一个线程来运行，要么进入任务队列中等待。如果任务队列已满，则拒绝 (reject) 该任务。
-
-任务运行在线程中。新添加的任务会放在任务队列中，任务队列可以决定任务运行的顺序（FIFO，LIFO，或是基于优先级）。任务从任务队列中取出，放在一个线程中执行。
+### ThreadPoolExecutor 的创建参数
 
 线程池的执行策略包括：
 
@@ -101,8 +85,6 @@ Java 中的每个 `Thread` 都对应于操作系统的一个线程。线程创�
 + 排队等待的任务数量
 + 系统过载时选择放弃哪个任务，如何通知这件事
 + 任务执行前后需要做哪些处理
-
-### ThreadPoolExecutor 的创建参数
 
 `Executors` 中创建线程池的静态工厂都是调用了 `ThreadPoolExecutor` 的 constructor，并传递不同的参数。`ThreadPoolExecutor` 接收的参数为：
 
@@ -114,6 +96,8 @@ Java 中的每个 `Thread` 都对应于操作系统的一个线程。线程创�
   + 默认为 `DefaultThreadFactory`，为线程设置可读的名字
 + `handler: RejectedExecutionHandler` 任务队列满时，如何拒绝任务
   + 默认为 abort policy (抛出异常)
+  
+### 四种默认的线程池
 
 | 线程池 | `corePoolSize` | `maxPoolSize` | `keepAliveTime` | `workQueue` |
 | :-: | :-: | :-: | :-: | :-: |
@@ -122,7 +106,9 @@ Java 中的每个 `Thread` 都对应于操作系统的一个线程。线程创�
 | Single thread executor | 1 | 1 | N/A | `LinkedBlockingQueue` |
 | Scheduled thread pool | `n` | `Integer.MAX_VALUE` | 60 secs | `DelayedWorkQueue` |
 
-Fixed thread pool 和 single thread executor 的线程数量是固定的，因此使用可以无限增长的 `LinkedBlockingQueue` 作为任务队列；cached thread pool 的线程数量没有上限，因此不需要在队列中存储任务，使用无容量的 `SynchronousQueue`。
+Fixed thread pool 和 single thread executor 的线程数量是固定的，因此使用可以无限增长的 `LinkedBlockingQueue` 作为任务队列；cached thread pool 的线程数量没有上限，因此不需要在队列中存储任务，使用无容量的 `SynchronousQueue`。关于队列的实现原理，参考[并发集合](concurrency-collection.md)。
+
+这三种线程池都有缺陷，fixed thread pool 和 single thread executor 的任务队列是无限增长的；而 cached thread pool 的线程数量是无限增长的。可以自己自定义一个线程池，设置线程数量上限和等待任务数量上限。
 
 ### 行为设置
 
@@ -141,7 +127,7 @@ Fixed thread pool 和 single thread executor 的线程数量是固定的，因�
 
 用户可以继承 `ThreadPoolExecutor`，重写这些回调方法，来定义线程池的行为。
 
-## 线程池的实现原理
+## 线程池的运行原理
 
 ### 类结构
 
@@ -153,7 +139,19 @@ Fixed thread pool 和 single thread executor 的线程数量是固定的，因�
 
 `ThreadPoolExecutor` 继承了 `AbstractExecutorService`，实现了线程池的各个功能。
 
-### 线程池状态
+#### CompletionService
+
+`CompletionService` 包装了 `ExecutorService`，增强了其功能。它维护一个 `Future` 对象的 blocking queue，称为 completion queue。当一个 future 中的任务完成之后，会放入 completion queue。这样调用 `CompletionService.take()` 取出 future 的时候，就不用再等待 future 了。（相当于一个 future 的多路选择？）
+
+### 线程池状态（生命周期）
+
++ Shundown
+  + `shutdown()`
+  + `awaitTermination()`
+  + `shutdownNow()`
++ Test
+  + `isShutdown()`
+  + `isTerminated()`
 
 `ThreadPoolExecutor.ctl` 存储线程池的 control state。它是一个 32 位的整数：
 

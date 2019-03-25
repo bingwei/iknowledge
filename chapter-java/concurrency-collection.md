@@ -106,13 +106,24 @@ synchronized (list) {
 
 三个默认的线程池实现都用到了 blocking queue（两个用 `LinkedBlockingQueue`，一个用 `SynchronousQueue`）。
 
-ArrayBlockingQueue：数组实现，有限容量，`ReentrantLock` 控制。
+#### ArrayBlockingQueue 与 LinkedBlockingQueue
 
-LinkedBlockingQueue：链表实现，有限/无限容量，`ReentrantLock` 控制。
+都是使用 `ReentrantLock` 和 `Condition` 来实现。
+
+| | ArrayBlockingQueue | LinkedBlockingQueue |
+| :-: | :-: | :-: |
+| 底层数据结构 | 循环数组 | 带 dummy head 的单链表 |
+| 容量限制 | 有限容量 | 默认无限容量，可以设置为有限 |
+| 锁的数量 | 一把锁 | 两把锁：putLock 和 takeLock |
+| 锁的公平性 | 可以设置公平或非公平 | 非公平 |
+
+#### SynchronousQueue
 
 SynchronousQueue：容量为 0，可以选择公平模式 (FIFO) 或非公平模式。可以用来保证公平性。
 
-PriorityBlockingQueue 就是 PriorityQueue 的线程安全版本，使用基于数组的二叉堆实现。
+#### PriorityBlockingQueue
+
+就是 PriorityQueue 的线程安全版本，使用基于数组的二叉堆实现。
 
 ### 非阻塞队列： `ConcurrentLinkedQueue`, `ConcurrentLinkedDeque`
 
@@ -136,20 +147,6 @@ Copy-on-write 容器的特点：
   + Iterator 不会抛出 `ConcurrentModificationException`
 
 `CopyOnWriteArraySet` 由于使用数组实现（实际上是基于 `CopyOnWriteArrayList` 实现的），查找等操作的时间复杂度是 O(n)，所以适用于小集合的场景。
-
-## 并发集合实现原理
-
-### `ConcurrentHashMap`
-
-### `ArrayBlockingQueue`
-
-### `LinkedBlockingQueue`
-
-### `PriorityBlockingQueue`
-
-### `SynchronousQueue`
-
-### `CopyOnWriteArrayList`
 
 ## 参考
 
