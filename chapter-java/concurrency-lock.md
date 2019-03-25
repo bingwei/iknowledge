@@ -152,7 +152,55 @@ try {
 基于 CPU 提供的原子操作指令实现，如 x86 的 `CMPXCHG` 指令。
 CAS 是一种无锁的原子操作，用来实现 lock-free 的数据结构。
 
-参考：
+```C++
+bool CAS(int& dest, int old_val, int new_val) {
+    if (dest == old_val) {
+        dest = new_val;
+        return true;
+    } else {
+        return false;
+    }
+}
+```
 
-+ [Compare-and-swap - Wikipedia](https://en.wikipedia.org/wiki/Compare-and-swap)
-+ [无锁队列的实现 - 酷壳](https://coolshell.cn/articles/8239.html)
+CAS 的缺点：
+
++ 竞争者较多时，自旋次数会很多，影响性能
++ ABA 问题
+  + 缓解方法：使用版本号，例如 `AtomicStampedReference`
+
+### Java 中的 CAS
+
+一般是调用 `sun.misc.Unsafe`（[源码](http://www.docjar.com/html/api/sun/misc/Unsafe.java.html)）中提供的 `compareAndSwapInt`, `compareAndSwapLong`, `compareAndSwapObject` 方法。它们都是 native 方法，底层会使用 `CMPXCHG` 之类的指令。
+
+例如 `AtomicInteger` 中基本都是对 `Unsafe` 中方法的包装。
+
+### 无锁数据结构 Lock-free data structure
+
+无锁队列。参考：[无锁队列的实现 - 酷壳](https://coolshell.cn/articles/8239.html)。
+
+```C++
+void enqueue(T x) {
+    Node* q = new Node(x);
+    Node* p;
+    while (true) {
+        p = tail;
+        if (CAS(p->next, nullptr, q)) {
+            break;
+        }
+    }
+    CAS(tail, p, q);
+}
+
+T dequeue() {
+    Node* p;
+    while (true) {
+        p = head;
+        assert(p->next != nullptr); // Dummy head node
+        if (CAS(head, p, p->next)) {
+            break;
+        }
+    }
+    return p->next->val;
+}
+```

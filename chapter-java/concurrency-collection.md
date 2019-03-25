@@ -119,7 +119,15 @@ synchronized (list) {
 
 #### SynchronousQueue
 
-SynchronousQueue：容量为 0，可以选择公平模式 (FIFO) 或非公平模式。可以用来保证公平性。
+SynchronousQueue：没有任何容量（容量为 0）的特殊 blocking queue。一个线程 put 的时候必须等待另一个线程 take，反之亦然。它有点类似 CSP 中的 channel 概念。
+
+可以选择公平模式 (FIFO) 或非公平模式。SynchronousQueue 实现了 _dual stack and dual queue_ 算法。对于非公平模式，使用 FIFO 的 dual stack；对于公平模式，使用 LIFO 的 dual queue。
+
+Dual stack 和 dual queue 都是无锁数据结构。底层使用 CAS 和自旋操作 (spin) 实现。
+
+参考：
+
++ 论文原文：[Nonblocking Concurrent Data Structures with Condition Synchronization](http://www.cs.rochester.edu/research/synchronization/pseudocode/duals.html)
 
 #### PriorityBlockingQueue
 
