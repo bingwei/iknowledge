@@ -98,6 +98,8 @@ SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
 
 + 隔离性 —— 由**并发控制系统**实现（一般是锁）
 + 原子性、持久性 —— 由**恢复系统**实现（一般是 redo log 和 undo log）
+  + Redo log 负责崩溃后的恢复，保证持久性
+  + Undo log 负责撤销修改，保证原子性
 + 一致性 —— 存在争议
   + > Ensuring consistency for an individual transaction is the responsibility of the application programmer who codes the transaction. 保障一致性是程序员的责任 —— _Database System Concepts_, Section 14.2
 
@@ -106,6 +108,23 @@ SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
 每个存储引擎实现锁的方式都不同，见 InnoDB。
 
 ### 恢复系统 Recovery system
+
+#### ARIES 算法
+
+ARIES (Algorithms for Recovery and Isolation Exploiting Semantics) 一种通用的数据库恢复算法。
+
+ARIES 算法基于 WAL 原则。WAL (Write-Ahead Logging) 是一种用来保证持久性和原子性的方法。日志的内容比实际的修改先写到磁盘。对于 redo log 和 undo log 都是如此。
+
+ARIES 算法的恢复步骤：
+
++ 根据 redo log 中记录的历史，将系统恢复到 crash 之前的状态
++ 根据 undo log，将未完成的事务撤销
+
+参考：
+
++ [ARIES数据库恢复算法](https://blog.lotuslab.org/posts/2017-01-02-aries%E6%95%B0%E6%8D%AE%E5%BA%93%E6%81%A2%E5%A4%8D%E7%AE%97%E6%B3%95/)
++ [Write-ahead logging - Wikipedia](https://en.wikipedia.org/wiki/Write-ahead_logging)
++ [Slide - ARIES Recovery Algorithm](https://www.db-book.com/db4/slide-dir/Aries.pdf)
 
 #### Redo Log
 
@@ -121,4 +140,6 @@ Undo log 记录某数据被修改前的值，可以用来在事务失败时进�
 
 + Redo log 一般是写到文件里，而 undo log 是放在一个特殊的段中
 + Redo log 是物理日志，而 undo log 是逻辑日志
+  + 物理日志只需要考虑当前页，效率较好
+  + 逻辑日志的并发性更好
 + Undo log 也需要持久化保护，因此 undo log 也有对应的 redo log

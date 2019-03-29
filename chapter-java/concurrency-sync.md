@@ -420,3 +420,95 @@ class BoundedBuffer<E> {
 ## AQS 框架
 
 `AbstractQueuedSynchronizer` (AQS) 是一个框架，用来构建 lock 和 synchronizer。
+
+### AQS 中的概念
+
+#### 状态
+
+AQS 使用一个 int 类型的成员变量 state 来表示同步状态，当 state > 0 时表示已经获取了锁，当 state == 0 时表示释放了锁。
+
++ `getState()` —— 返回同步状态的当前值
++ `setState(int newState)` —— 设置当前同步状态
++ `compareAndSetState(int expect, int update)` —— 使用 CAS 设置当前状态，该方法能够保证状态设置的原子性
+
+#### Acquire / release
+
+基本操作是 acquire 和 release。有两种基本模式
+
++ Exclusive mode 独占式
+  + 只有一个线程可以 acquire 成功
+  + 如 `ReentrantLock`
+  + 实现 `tryAcquire`, `tryRelease`, `isHeldExclusively`
++ Shared mode 共享式
+  + 有多个线程可以 acquire 成功
+  + 如 `Semaphore`
+  + 实现 `tryAcquireShared`, `tryReleaseShared`
+
+一般一个实现类只会使用其中一种模式，但也有例外，如 `ReadWriteLock`
+
+#### CLH 队列
+
+参考 `AbstractQueuedSynchronizer.Node` 的注释
+
+#### Condition object
+
+参考 `AbstractQueuedSynchronizer.ConditionObject` 的注释
+
+### 使用 AQS 的例子
+
+用到 AQS 框架的 JUC 类：
+
++ `ReentrantLock`
++ `Semaphore`
++ `ReentrantReadWriteLock`
++ `CountDownLatch`
++ `SynchronousQueue`
++ `FutureTask`
+
+AQS的主要使用方式是继承，子类通过继承同步器并实现它的抽象方法来管理同步状态。
+
+`ReentrantLock` 示例代码：
+
+```Java
+protected boolean tryAcquire(int ignored) {
+    final Thread current = Thread.currentThread();
+    int c = getState();
+    if (c == 0) {
+        if (compareAndSetState(0, 1)) {
+            owner = current;
+            return true;
+        }
+    } else if (current == owner) {
+        setState(c+1);
+        return true;
+    }
+    return false;
+}
+```
+
+`Semaphore` 示例代码：
+
+```Java
+protected int tryAcquireShared(int acquires) {
+    while (true) {
+        int available = getState();
+        int remaining = available - acquires;
+        if (remaining < 0
+                || compareAndSetState(available, remaining))
+            return remaining;
+    }
+}
+
+protected boolean tryReleaseShared(int releases) {
+    while (true) {
+        int p = getState();
+        if (compareAndSetState(p, p + releases))
+            return true;
+    }
+}
+```
+
+### 参考资料
+
++ _Java Concurrency in Action_, Section 14.5, 14.6
++ `AbstractQueuedSynchronizer` 源码

@@ -160,6 +160,16 @@ public class Singleton {
 
 + [Java 多线程三大核心 - 原子性、可见性、顺序性](https://crossoverjie.top/JCSprout/#/thread/Threadcore)
 
+## Java 内存模型 Memory Model
+
+JMM 是跨平台的，JVM 负责处理平台特定的问题。
+
+多线程程序不仅面临线程调度的不确定性，还可能出现指令重排。而 _happens-before_ 关系可以避免指令重排。
+
+参考：
+
++ _Java Concurrency in Action_, Chapter 16
+
 ## Liveness problems
 
 程序陷入某个无法跳出的状态，类似于单线程程序中的无限循环。这种问题也一般是在特定的线程调度下会触发。

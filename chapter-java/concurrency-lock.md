@@ -39,7 +39,7 @@ Unix 系统中称这种锁为 recursive mutex，可以在创建 mutex 的时候�
 | 行为 | 对数据上锁 | 不上锁，只在更新的时候检查数据是否被修改了 |
 | 例子 | `synchronized`, `ReentrantLock` | 版本号机制，CAS |
 | 适用场景 | 多写（冲突较多） | 多读（冲突较少） |
-| 缺点 | 阻塞 | ABA 问题，可能长时间不成功 |
+| 缺点 | 阻塞，死锁 | ABA 问题，可能长时间不成功 |
 
 ### 自旋锁 Spin lock
 
@@ -145,37 +145,75 @@ try {
 
 允许多个线程同时读
 
-## CAS 与无锁数据结构
+## CAS (compare and swap)
 
-### CAS (compare and swap) 原子操作
+CAS 是一种无锁的原子操作。CAS 是一种乐观锁。
 
-基于 CPU 提供的原子操作指令实现，如 x86 的 `CMPXCHG` 指令。
-CAS 是一种无锁的原子操作，用来实现 lock-free 的数据结构。
+### 实现原理
+
+#### 硬件支持
+
+大多数现代 CPU 都支持 CAS 操作，如 x86 的 `CMPXCHG` 指令。
 
 ```C++
-bool CAS(int& dest, int old_val, int new_val) {
-    if (dest == old_val) {
+// Simulate CAS
+int compare_and_swap(int& dest, int expected_val, int new_val) {
+    int old_val = dest;
+    if (old_val == expected_val) {
         dest = new_val;
-        return true;
-    } else {
-        return false;
     }
+    return old_val;
 }
 ```
 
-CAS 的缺点：
+#### JVM 支持
+
+`sun.misc.Unsafe`（[源码](http://www.docjar.com/html/api/sun/misc/Unsafe.java.html)）中提供了 `compareAndSwapInt`, `compareAndSwapLong`, `compareAndSwapObject` 方法。它们都是 native 方法，底层会调用 `CMPXCHG` 之类的指令。
+
+### CAS 的缺点
 
 + 竞争者较多时，自旋次数会很多，影响性能
 + ABA 问题
   + 缓解方法：使用版本号，例如 `AtomicStampedReference`
 
-### Java 中的 CAS
+## 原子变量 Atomic variables
 
-一般是调用 `sun.misc.Unsafe`（[源码](http://www.docjar.com/html/api/sun/misc/Unsafe.java.html)）中提供的 `compareAndSwapInt`, `compareAndSwapLong`, `compareAndSwapObject` 方法。它们都是 native 方法，底层会使用 `CMPXCHG` 之类的指令。
+`java.util.concurrent.atomic` 包。
 
-例如 `AtomicInteger` 中基本都是对 `Unsafe` 中方法的包装。
+提供了 volatile 的语义，对于 Interger / Long 还包括一些计算。
 
-### 无锁数据结构 Lock-free data structure
++ Scalar
+  + `AtomicInteger`
+  + `AtomicLong`
+  + `AtomicBoolean`
+  + `AtomicReference`
++ Array
+  + `AtomicIntegerArray`
+  + `AtomicLongArray`
+  + `AtomicReferenceArray`
++ Field updater
+  + `AtomicIntegerFieldUpdater`
+  + `AtomicLongFieldUpdater`
+  + `AtomicReferenceFieldUpdater`
++ Compound (versioned references)
+  + `AtomicMarkableReference`
+  + `AtomicStampedReference`
+
+Atomic 系列底层使用 CAS，在冲突较少的情况下性能较好。
+
+## 无锁数据结构 Lock-free data structure
+
+好处：
+
++ 免疫死锁问题（但仍然可能有 live lock 或 starvation）
+
+无锁数据结构设计上比较难，需要专家来设计。一个难点是如何将 atomic change 限制在单个变量上，这需要一些技巧。
+
+Java 中的无锁数据结构：
+
++ `ConcurrentLinkedQueue`
++ `ConcurrentLinkedDeque`
++ `SynchronousQueue`
 
 无锁队列。参考：[无锁队列的实现 - 酷壳](https://coolshell.cn/articles/8239.html)。
 
