@@ -1,5 +1,25 @@
 # Java
 
+## Roadmap
+
++ 基础知识
+  + _Core Java Volume I - Fundamentals_
++ Spring 框架
+  + _Spring in Action_
+  + _Spring Boot in Action_
+  + 《精通Spring 4.x》（工具书）
++ 进阶知识
+  + _Effective Java_
+  + Google Guava
++ 并发
+  + _Java Concurrency in Action_
++ 性能与底层细节
+  + _Java Performance: The Definitive Guide_
+  + 《深入理解Java虚拟机》周志明
++ 编程思想
+  + _Thinking in Java_ （宏观角度思考）
++ 设计模式
+
 ## 语言机制
 
 ### 语法
